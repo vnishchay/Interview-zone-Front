@@ -1,0 +1,46 @@
+.container-2 {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 0.4fr;
+  grid-template-rows: 0.8fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: "v1 v2 button";
+  width: auto;
+  height: 16em;
+}
+
+.button {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "b1"
+    "b2"
+    "b3";
+  grid-area: button;
+  /* width: 10em; */
+  /* height: 15em; */
+}
+
+.b1 {
+  grid-area: b1;
+}
+
+.b2 {
+  grid-area: b2;
+}
+
+.b3 {
+  grid-area: b3;
+}
+
+.v1 {
+  grid-area: v1;
+}
+
+.v2 {
+  grid-area: v2;
+}

@@ -1,0 +1,19 @@
+.scroller-outer {
+  height: 65vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.scroller-inner {
+  position: absolute;
+
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  line-height: 2;
+  font-size: 18px;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

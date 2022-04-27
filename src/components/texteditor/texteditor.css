@@ -1,0 +1,31 @@
+.ql-editor {
+  height: 95vh;
+  width: 100%;
+
+  /* width: auto; */
+  /* width: 7in; */
+  /* padding: 1in; */
+  /* margin: 0.3rem; */
+  /* margin-top: auto; */
+  background: white;
+  color: rgb(8, 5, 55);
+  /* border-radius: 0 0 0.5rem 0.5rem; */
+}
+.ql-container.ql-snow {
+  border: none;
+  display: flex;
+  padding: 0;
+  justify-content: center;
+  z-index: 0;
+  background-color: rgb(181, 181, 189);
+}
+
+.ql-toolbar.ql-snow {
+  display: flex;
+  position: static;
+  top: 0;
+  width: auto;
+  z-index: 1;
+  background-color: rgb(252, 250, 250);
+  border: none;
+}
