@@ -11,7 +11,7 @@ const SelectProblemsPage = () => {
     const { register, handleSubmit } = useForm({});
     const fetchquestions = async () => {
         try {
-            await axios.get('http://localhost:3001/question/get', headers).then((res) => {
+            await axios.get('https://urban-eatary-backend.herokuapp.com/question/get', headers).then((res) => {
                 var data = res.data;
                 if (data) {
                     console.log(data)

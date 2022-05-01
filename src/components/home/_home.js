@@ -55,7 +55,7 @@ export default function HomePage() {
   const saveInterviewData = async () => {
     setloading(true)
     try {
-      axios.post("http://localhost:3001/interview/create", data, headers).then((res) => {
+      axios.post("https://urban-eatary-backend.herokuapp.com/interview/create", data, headers).then((res) => {
         setinterview(res.data.data);
         setloading(false)
       })

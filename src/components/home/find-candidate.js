@@ -18,7 +18,7 @@ export default function FindCandiate() {
     const [interviewList, setinterviewList] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3001/interview/find', headers).then((res) => {
+        axios.get('https://urban-eatary-backend.herokuapp.com/interview/find', headers).then((res) => {
             var data = res.data.data;
             if (res && data) {
                 console.log(data)
@@ -66,7 +66,7 @@ export default function FindCandiate() {
         setloading(true)
         try {
             if (data.interviewID !== undefined && data.idOfHost !== undefined)
-                axios.post("http://localhost:3001/interview/create", data, headers).then((res) => {
+                axios.post("https://urban-eatary-backend.herokuapp.com/interview/create", data, headers).then((res) => {
                     setinterview(res.data.data);
                     setloading(false)
                 })

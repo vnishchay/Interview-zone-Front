@@ -48,7 +48,7 @@ const Auth = () => {
       console.log(email.current.value)
       console.log(password.current.value)
       await axios
-        .post("http://localhost:3001/login", {
+        .post("https://urban-eatary-backend.herokuapp.com//login", {
           email: email.current.value,
           password: password.current.value,
         })
@@ -76,7 +76,7 @@ const Auth = () => {
       return;
     try {
       await axios
-        .post("http://localhost:3001/signup", {
+        .post("https://urban-eatary-backend.herokuapp.com/signup", {
           email: user.email.current.value,
           password: user.password.current.value,
         }).then((response) => {

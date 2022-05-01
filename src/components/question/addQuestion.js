@@ -10,7 +10,7 @@ export default function AddQuestion() {
 
   const { register, handleSubmit } = useForm({ shouldUseNativeValidation: true });
   const onSubmit = async data => {
-    axios.post("http://localhost:3001/question/create", data, headers).then((res) => {
+    axios.post("https://urban-eatary-backend.herokuapp.com/question/create", data, headers).then((res) => {
       console.log(res.data)
     })
   };

@@ -25,7 +25,7 @@ export default function InterviewPage() {
 
   useEffect(() => {
     const getquestion = async () => {
-      const url = "http://localhost:3001/question/get";
+      const url = "https://urban-eatary-backend.herokuapp.com/question/get";
       await axios
         .get(
           url, headers)

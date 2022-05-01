@@ -1,8 +1,8 @@
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client'
 
-const sock = io("http://localhost:3001");
+const sock = io("https://urban-eatary-backend.herokuapp.com");
 
-sock.on('connection', ()=>{
+sock.on('connection', () => {
   console.log("socket connection established")
   console.log("connected")
 })
