@@ -1,5 +1,3 @@
-import IconButton from "@material-ui/core/IconButton";
-import PhoneIcon from "@material-ui/icons/Phone";
 import React, { useEffect, useRef, useState } from "react";
 import Peer from 'simple-peer'
 import sock from "../socket";
@@ -163,13 +161,14 @@ export default function Video({ constraints }) {
             <button onClick={leaveCall}>
               End Call
             </button>
-          ) : (<IconButton className="b12"
+          ) : (<button className="b12"
             color="primary"
             aria-label="call"
             onClick={() => callUser()}
           >
-            <PhoneIcon fontSize="small" />
-          </IconButton>
+            Phone
+            {/* <PhoneIcon fontSize="small" /> */}
+          </button>
           )}
 
         </div>
