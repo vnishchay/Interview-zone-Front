@@ -11,7 +11,7 @@ const SelectProblemsPage = () => {
     const { register, handleSubmit } = useForm({});
     const fetchquestions = async () => {
         try {
-            await axios.get(process.env.REACT_APP_BASE_URL + ' /question/get', headers).then((res) => {
+            await axios.get(process.env.REACT_APP_BASE_URL + '/question/get', headers).then((res) => {
                 var data = res.data;
                 if (data) {
                     console.log(data)

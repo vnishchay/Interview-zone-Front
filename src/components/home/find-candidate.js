@@ -67,7 +67,7 @@ export default function FindCandiate() {
         setloading(true)
         try {
             if (data.interviewID !== undefined && data.idOfHost !== undefined)
-                axios.post(process.env.REACT_APP_BASE_URL + "/interview/create", data, headers).then((res) => {
+                axios.post(process.env.REACT_APP_BASE_URL + '/interview/create', data, headers).then((res) => {
                     setinterview(res.data.data);
                     setloading(false)
                 })

@@ -9,6 +9,7 @@ import Video from "../videocall/video"
 import PrimarySearchAppBar from "./appbar";
 import { useLocation } from "react-router-dom";
 const { headers } = require("../config")
+require('dotenv').config()
 
 
 export default function InterviewPage() {
@@ -19,7 +20,7 @@ export default function InterviewPage() {
 
   useEffect(() => {
     const getquestion = async () => {
-      const url = "/question/get";
+      const url = process.env.REACT_APP_BASE_URL + "/question/get";
       await axios
         .get(
           url, headers)
