@@ -1,9 +1,6 @@
 import React from "react";
 import "./questions.css";
-import { useEffect, useState, useRef } from "react";
 import QuestionWidget from "./questionwidget";
-const axios = require("axios");
-
 
 
 export default function Questions({ questions }) {

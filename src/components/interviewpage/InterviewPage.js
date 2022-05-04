@@ -5,10 +5,8 @@ import axios from "axios";
 import ChatRoom from "../chat/chat";
 import "./interview.css"
 import { useEffect } from "react"
-import { useAuth } from "../auth/authContext";
 import Video from "../videocall/video"
 import PrimarySearchAppBar from "./appbar";
-import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 const { headers } = require("../config")
 
@@ -16,16 +14,12 @@ const { headers } = require("../config")
 export default function InterviewPage() {
   const location = useLocation()
   const { constraints } = location.state
-  const [time, settime] = useState();
   const [questionid, setquestionid] = useState();
-  const { interviewID } = useParams();
-  const auth = useAuth();
-
   const [questions, setquestions] = useState();
 
   useEffect(() => {
     const getquestion = async () => {
-      const url = "https://urban-eatary-backend.herokuapp.com/question/get";
+      const url = "/question/get";
       await axios
         .get(
           url, headers)

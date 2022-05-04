@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { Route, Redirect } from "react-router-dom";
-
+require('dotenv').config()
 const axios = require('axios')
 const AuthContext = createContext();
 
@@ -47,8 +47,9 @@ const Auth = () => {
     try {
       console.log(email.current.value)
       console.log(password.current.value)
+      console.log(process.env.REACT_APP_BASE_URL)
       await axios
-        .post("https://urban-eatary-backend.herokuapp.com//login", {
+        .post(process.env.REACT_APP_BASE_URL + "/login", {
           email: email.current.value,
           password: password.current.value,
         })
@@ -76,7 +77,7 @@ const Auth = () => {
       return;
     try {
       await axios
-        .post("https://urban-eatary-backend.herokuapp.com/signup", {
+        .post(process.env.REACT_APP_BASE_URL + "/signup", {
           email: user.email.current.value,
           password: user.password.current.value,
         }).then((response) => {

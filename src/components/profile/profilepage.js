@@ -12,10 +12,10 @@ export default function ProfilePage() {
                     </div>
                     <button>Follow</button>
                     <div className="user-profile-data">
-                        <h1>Jose Pino</h1>
-                        <p>github.com/jofpin</p>
+                        <h1>Nishchay verma</h1>
+                        <p>github.com/codernishchay</p>
                     </div>
-                    <div className="description-profile">Front-end | Security Researcher | CSS Warrior | <a href="https://twitter.com/bullgit" title="bullgit"><strong>@bullgit</strong></a> | I love to create small things for the internet!</div>
+                    <div className="description-profile">Front-end | Security Researcher | CSS Warrior | <a href="https://twitter.com/codernishchay" title="bullgit"><strong>@bullgit</strong></a> | I love to create small things for the internet!</div>
                     <ul className="data-user">
                         <li><a><strong>3390</strong><span>Posts</span></a></li>
                         <li><a><strong>718</strong><span>Followers</span></a></li>

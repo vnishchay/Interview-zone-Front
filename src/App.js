@@ -30,8 +30,8 @@ function App() {
             <PrivateRoute path='/interview/:id'>
               <InterviewPage />
             </PrivateRoute>
-            <Route path="/find-host" component={FindHost} ></Route>
-            <Route path="/find-candidate" component={FindCandiate} ></Route>
+            <PrivateRoute path="/find-host" component={FindHost} ></PrivateRoute>
+            <PrivateRoute path="/find-candidate" component={FindCandiate} ></PrivateRoute>
             <Route path="/profile" component={ProfilePage} ></Route>
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />

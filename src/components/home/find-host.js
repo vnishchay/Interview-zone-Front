@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import "./home.css"
 import { Link } from "react-router-dom";
 const axios = require('axios')
+require('dotenv').config()
 const { headers } = require("../config")
 
 export default function FindHost() {
@@ -20,7 +21,7 @@ export default function FindHost() {
 
 
     useEffect(() => {
-        axios.get('https://urban-eatary-backend.herokuapp.com/interview/find', headers).then((res) => {
+        axios.get(process.env.REACT_APP_BASE_URL + '/interview/find', headers).then((res) => {
             var data = res.data.data;
             if (res && data) {
                 console.log(data)
@@ -70,7 +71,7 @@ export default function FindHost() {
     const saveInterviewData = async () => {
         setloading(true)
         try {
-            axios.post("https://urban-eatary-backend.herokuapp.com/interview/create", data, headers).then((res) => {
+            axios.post(process.env.REACT_APP_BASE_URL + "/interview/create", data, headers).then((res) => {
                 setinterview(res.data.data);
                 setloading(false)
             })
@@ -113,7 +114,7 @@ export default function FindHost() {
                                         onClick={() => navigator.clipboard.writeText(link)}
                                     >
                                         {link !== ""
-                                            ? "http://localhost:3000" + link
+                                            ? window.location.href + link
                                             : "Create Link"}
                                     </button>
                                     <div className="mb-2">

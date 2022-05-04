@@ -6,6 +6,7 @@ import "./home.css"
 import { Link } from "react-router-dom";
 const axios = require('axios')
 const { headers } = require("../config")
+require('dotenv').config()
 
 export default function FindCandiate() {
     const [link, setlink] = useState("");
@@ -18,7 +19,7 @@ export default function FindCandiate() {
     const [interviewList, setinterviewList] = useState([]);
 
     useEffect(() => {
-        axios.get('https://urban-eatary-backend.herokuapp.com/interview/find', headers).then((res) => {
+        axios.get(process.env.REACT_APP_BASE_URL + '/interview/find', headers).then((res) => {
             var data = res.data.data;
             if (res && data) {
                 console.log(data)
@@ -66,7 +67,7 @@ export default function FindCandiate() {
         setloading(true)
         try {
             if (data.interviewID !== undefined && data.idOfHost !== undefined)
-                axios.post("https://urban-eatary-backend.herokuapp.com/interview/create", data, headers).then((res) => {
+                axios.post(process.env.REACT_APP_BASE_URL + "/interview/create", data, headers).then((res) => {
                     setinterview(res.data.data);
                     setloading(false)
                 })
@@ -98,7 +99,7 @@ export default function FindCandiate() {
                                         className="raise"
                                         onClick={() => navigator.clipboard.writeText(link)} y>
                                         {link !== ""
-                                            ? "http://localhost:3000" + link
+                                            ? window.location.href + link
                                             : "Create Link"}
                                     </button>
                                     <div className="mb-2">
@@ -144,12 +145,6 @@ export default function FindCandiate() {
                 <div>
                     <h1>Find Interviewer</h1>
                     {
-                        // id: "62651a67f21f90f0bcc4ba31"
-                        // interviewID: ""
-                        // levelOfQuestions: "medium"
-                        // numberOfQuestions: "8"
-                        // questions: []
-                        // typeOfInterview: "Job"
                         interviewList.length > 0 && interviewList.map((interview) => {
                             return <div className="card-interview"><ul key={interview._id}>
                                 <li><h2>Interview ID</h2> {interview.interviewID}</li>

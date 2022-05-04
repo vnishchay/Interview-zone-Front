@@ -6,6 +6,7 @@ import "./home.css"
 import { Link } from "react-router-dom";
 const axios = require('axios')
 const { headers } = require("../config")
+require('dotenv').config();
 
 export default function HomePage() {
   const [link, setlink] = useState("");
@@ -55,7 +56,7 @@ export default function HomePage() {
   const saveInterviewData = async () => {
     setloading(true)
     try {
-      axios.post("https://urban-eatary-backend.herokuapp.com/interview/create", data, headers).then((res) => {
+      axios.post(process.env.REACT_APP_BASE_URL + "/interview/create", data, headers).then((res) => {
         setinterview(res.data.data);
         setloading(false)
       })
@@ -98,7 +99,7 @@ export default function HomePage() {
                     onClick={() => navigator.clipboard.writeText(link)}
                   >
                     {link !== ""
-                      ? "http://localhost:3000" + link
+                      ? window.location.href + link
                       : "Create Link"}
                   </button>
                   <div className="mb-2">

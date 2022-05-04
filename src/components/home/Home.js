@@ -4,7 +4,6 @@ import { useAuth } from "../auth/authContext";
 import { useHistory } from "react-router-dom";
 import "./_home.css"
 import { Link } from "react-router-dom";
-const axios = require('axios')
 const { headers } = require("../config")
 
 export default function Home() {
@@ -59,9 +58,6 @@ export default function Home() {
                     </div>
                 </ul>
             </section>
-            {/* <footer> */}
-            {/* Design : https://codepen.io/ahmadnasr/pen/KKpvNGY */}
-            {/* </footer> */}
         </div>
 
     );

@@ -4,18 +4,18 @@ import { useForm } from "react-hook-form";
 import { headers } from '../config';
 import "./addQuestion.css";
 
+require('dotenv').config()
 
 
 export default function AddQuestion() {
 
   const { register, handleSubmit } = useForm({ shouldUseNativeValidation: true });
   const onSubmit = async data => {
-    axios.post("https://urban-eatary-backend.herokuapp.com/question/create", data, headers).then((res) => {
+    axios.post(process.env.REACT_APP_BASE_URL + "/question/create", data, headers).then((res) => {
       console.log(res.data)
     })
   };
 
-  // router.route('/question/create').post(questionController.addquestion)
   return (
     <div className="question-body">
       <div className="card">
