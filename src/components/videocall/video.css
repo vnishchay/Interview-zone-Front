@@ -27,6 +27,7 @@
 
 .b1 {
   grid-area: b1;
+  z-index: 5;
 }
 
 .b2 {

@@ -9,9 +9,11 @@ const axios = require('axios');
 const SelectProblemsPage = () => {
     const [questionList, setquestionList] = useState([]);
     const { register, handleSubmit } = useForm({});
+    const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
+
     const fetchquestions = async () => {
         try {
-            await axios.get(process.env.REACT_APP_BASE_URL + '/question/get', headers).then((res) => {
+            await axios.get(url + '/question/get', headers).then((res) => {
                 var data = res.data;
                 if (data) {
                     console.log(data)

@@ -15,7 +15,7 @@ export default function Register() {
   return (
     <>
 
-      <div className="container" onclick="onclick">
+      <div className="container" >
         <div className="top"></div>
         <div className="bottom"></div>
         <div className="center">

@@ -1,17 +1,11 @@
-@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
+/* @import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
 *,
 *:before,
 *:after {
   box-sizing: border-box;
 }
 
-.container {
-  color: white;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
+
 .container:hover .top:before,
 .container:hover .top:after,
 .container:hover .bottom:before,
@@ -92,4 +86,16 @@
   border-radius: 1px;
   border: 1px solid #ccc;
   font-family: inherit;
+} */
+
+.container {
+  top: 20%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20%;
+  color: white;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }

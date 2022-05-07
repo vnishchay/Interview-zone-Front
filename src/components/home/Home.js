@@ -7,6 +7,11 @@ import { Link } from "react-router-dom";
 const { headers } = require("../config")
 
 export default function Home() {
+    const auth = useAuth();
+    useEffect(() => {
+
+    }, [])
+
     return (
         <div>
             {/* //todo : add signin / sign up button on right corner */}

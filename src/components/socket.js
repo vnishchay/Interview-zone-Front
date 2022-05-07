@@ -1,9 +1,9 @@
 import { io } from 'socket.io-client'
 require('dotenv').config()
-const sock = io(process.env.REACT_APP_BASE_URL);
+const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
+const sock = io(url);
 
 sock.on('connection', () => {
   console.log("socket connection established")
-  console.log("connected")
 })
 export default sock;

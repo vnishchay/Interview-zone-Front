@@ -23,7 +23,7 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Switch>
-            <Route exact path="/" component={Home} ></Route>
+            <PrivateRoute exact path="/" component={Home} ></PrivateRoute>
             <PrivateRoute path='/setup/:id'>
               <SetupPage />
             </PrivateRoute>
@@ -32,13 +32,13 @@ function App() {
             </PrivateRoute>
             <PrivateRoute path="/find-host" component={FindHost} ></PrivateRoute>
             <PrivateRoute path="/find-candidate" component={FindCandiate} ></PrivateRoute>
-            <Route path="/profile" component={ProfilePage} ></Route>
-            <Route path="/register" component={Register} />
-            <Route path="/login" component={Login} />
-            <Route path="/search" component={SearchPeerPage}></Route>
-            <Route path="/addproblem" component={AddQuestion} ></Route>
-            <Route path="/boop" component={BoopButton} ></Route>
-            <Route path={'/setupInterview'} component={SetQuestionsPage}></Route>
+            <PrivateRoute path="/profile" component={ProfilePage} ></PrivateRoute>
+            <PrivateRoute path="/register" component={Register} />
+            <PrivateRoute path="/login" component={Login} />
+            <PrivateRoute path="/search" component={SearchPeerPage}></PrivateRoute>
+            <PrivateRoute path="/addproblem" component={AddQuestion} ></PrivateRoute>
+            <PrivateRoute path="/boop" component={BoopButton} ></PrivateRoute>
+            <PrivateRoute path={'/setupInterview'} component={SetQuestionsPage}></PrivateRoute>
             <Route path="*" component={page_not_found}></Route>
           </Switch>
         </BrowserRouter>

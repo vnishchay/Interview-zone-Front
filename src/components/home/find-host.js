@@ -19,9 +19,10 @@ export default function FindHost() {
 
     const [interview, setinterview] = useState([]);
 
+    const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BASE_URL + '/interview/find', headers).then((res) => {
+        axios.get(url + '/interview/find', headers).then((res) => {
             var data = res.data.data;
             if (res && data) {
                 console.log(data)
@@ -33,7 +34,7 @@ export default function FindHost() {
 
 
     useEffect(() => {
-        if (localStorage.getItem("jwt") == undefined || auth.user === undefined) {
+        if (auth.jwt == undefined || auth.user === undefined) {
             setemail("guest");
         } else {
             setemail(auth.user.email);
@@ -71,7 +72,7 @@ export default function FindHost() {
     const saveInterviewData = async () => {
         setloading(true)
         try {
-            axios.post(process.env.REACT_APP_BASE_URL + "/interview/create", data, headers).then((res) => {
+            axios.post(url + "/interview/create", data, headers).then((res) => {
                 setinterview(res.data.data);
                 setloading(false)
             })
@@ -98,11 +99,11 @@ export default function FindHost() {
                     >
                         <div className="logout-button">
                             {
-                                localStorage.getItem("jwt") ? <button className="pulse" onClick={handleLogout}> logout </button> :
+                                auth.jwt ? <button className="pulse" onClick={handleLogout}> logout </button> :
                                     <Link to="/login"><button className="pulse"> Sign In</button></Link>
                             }
                             {
-                                localStorage.getItem("jwt") && <button className="pulse" >Account</button>
+                                auth.jwt && <button className="pulse" >Account</button>
                             }
                         </div>
                         <div>

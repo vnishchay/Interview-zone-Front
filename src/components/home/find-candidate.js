@@ -17,9 +17,10 @@ export default function FindCandiate() {
     const [loading, setloading] = useState()
     const [interview, setinterview] = useState([]);
     const [interviewList, setinterviewList] = useState([]);
+    const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BASE_URL + '/interview/find', headers).then((res) => {
+        axios.get(url + '/interview/find', headers).then((res) => {
             var data = res.data.data;
             if (res && data) {
                 console.log(data)
@@ -31,7 +32,7 @@ export default function FindCandiate() {
 
 
     useEffect(() => {
-        if (localStorage.getItem("jwt") == undefined || auth.user === undefined) {
+        if (auth.jwt == undefined || auth.user === undefined) {
             setemail("guest");
         } else {
             setemail(auth.user.email);
@@ -67,7 +68,7 @@ export default function FindCandiate() {
         setloading(true)
         try {
             if (data.interviewID !== undefined && data.idOfHost !== undefined)
-                axios.post(process.env.REACT_APP_BASE_URL + '/interview/create', data, headers).then((res) => {
+                axios.post(url + '/interview/create', data, headers).then((res) => {
                     setinterview(res.data.data);
                     setloading(false)
                 })

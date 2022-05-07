@@ -3,11 +3,9 @@ import Peer from 'simple-peer'
 import sock from "../socket";
 import "./video.css";
 import { useParams } from "react-router";
-import { element } from "prop-types";
 
 export default function Video({ constraints }) {
   const { id: videoID } = useParams();
-  const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
@@ -20,6 +18,20 @@ export default function Video({ constraints }) {
 
   const [isvideo, setisvideo] = useState(constraints.isvideo);
   const [isaudio, setisaudio] = useState(constraints.isaudio);
+
+  function toggleVideo() {
+    if (myVideo.current.srcObject != null && myVideo.current.srcObject.getVideoTracks().length > 0) {
+      setisvideo(!isvideo);
+      myVideo.current.srcObject.getVideoTracks()[0].enabled = isvideo;
+    }
+  }
+
+  function toggleMic() {
+    if (myVideo.current.srcObject != null && myVideo.current.srcObject.getAudioTracks().length > 0) {
+      setisaudio(!isaudio);
+      myVideo.current.srcObject.getAudioTracks()[0].enabled = isaudio;
+    }
+  }
 
   useEffect(() => {
     sock.emit("video-call", videoID);
@@ -38,36 +50,19 @@ export default function Video({ constraints }) {
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then((stream) => {
-        setStream(stream);
         myVideo.current.srcObject = stream;
       });
-
-    return () => {
-      setStream(undefined);
-    }
   }, []);
 
-
-  useEffect(() => {
-    if (stream !== undefined) {
-      stream.getAudioTracks().forEach(element => element.enabled = !element.enabled);
-    }
-  }, [isaudio, myVideo])
-  useEffect(() => {
-    if (stream !== undefined) {
-      stream.getVideoTracks().forEach(element => element.enabled = !element.enabled)
-    }
-  }, [isvideo, myVideo])
-
   const callUser = () => {
+    console.log("Call initiated")
     setinitiateCall(true);
     setCallEnded(false);
     const peer = new Peer({
       initiator: true,
       trickle: false,
-      stream: stream,
+      stream: myVideo.current.srcObject,
     });
-    console.log(stream)
 
     peer.on("signal", (data) => {
       sock.emit("callUser", {
@@ -95,10 +90,9 @@ export default function Video({ constraints }) {
     const peer = new Peer({
       initiator: false,
       trickle: false,
-      stream: stream,
+      stream: myVideo.current.srcObject,
     });
 
-    console.log(stream);
     setCallAccepted(true);
     setCallEnded(false);
     peer.on("signal", (data) => {
@@ -124,18 +118,6 @@ export default function Video({ constraints }) {
     setCallerSignal(undefined);
   };
 
-  const handleToggleaudio = (e) => {
-    e.preventDefault();
-    setisaudio(!isaudio);
-    return isaudio;
-  }
-
-  const handleTogglevideo = (e) => {
-    e.preventDefault();
-    setisvideo(!isvideo);
-    return isvideo;
-  }
-
 
   return (
     <div className="container-2">
@@ -150,10 +132,10 @@ export default function Video({ constraints }) {
 
         <div className='col'>
           <div className='row'>
-            {isvideo && <button className='slide setup-button row' onClick={handleTogglevideo}><img className='setup-button' src='/images/video.png'></img></button>}
-            {!isvideo && <button className='slide setup-button row' onClick={handleTogglevideo}><img className='setup-button' src='/images/novideo.png'></img></button>}
-            {isaudio && <button className='slide setup-button row' onClick={handleToggleaudio}><img className='setup-button' src='/images/microphone.png'></img></button>}
-            {!isaudio && <button className='slide setup-button row' onClick={handleToggleaudio}><img className='setup-button' src='/images/mute.png'></img></button>}
+            {isvideo && <button className='slide setup-button row' onClick={toggleVideo}><img className='setup-button' src='/images/video.png'></img></button>}
+            {!isvideo && <button className='slide setup-button row' onClick={toggleVideo}><img className='setup-button' src='/images/novideo.png'></img></button>}
+            {isaudio && <button className='slide setup-button row' onClick={toggleMic}><img className='setup-button' src='/images/microphone.png'></img></button>}
+            {!isaudio && <button className='slide setup-button row' onClick={toggleMic}><img className='setup-button' src='/images/mute.png'></img></button>}
           </div>
         </div>
         <div className="b2">
@@ -164,7 +146,7 @@ export default function Video({ constraints }) {
           ) : (<button className="b12"
             color="primary"
             aria-label="call"
-            onClick={() => callUser()}
+            onClick={callUser}
           >
             Phone
             {/* <PhoneIcon fontSize="small" /> */}
@@ -176,7 +158,7 @@ export default function Video({ constraints }) {
       </div>
       <div className="v1">
         <div className="video-1 ">
-          {stream ? (
+          {myVideo ? (
             <div>
               <video className="video-1"
                 playsInline

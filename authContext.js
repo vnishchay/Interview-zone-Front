@@ -5,6 +5,7 @@ const axios = require('axios')
 const AuthContext = createContext();
 require('dotenv').config()
 
+const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
 
 export const AuthProvider = (props) => {
     const auth = Auth();
@@ -20,7 +21,7 @@ export const PrivateRoute = ({ children, ...rest }) => {
         <Route
             {...rest}
             render={({ location }) =>
-                localStorage.getItem("jwt") && auth.user ? (
+                auth.jwt ? (
                     children
                 ) : (
                     <Redirect
@@ -35,35 +36,24 @@ export const PrivateRoute = ({ children, ...rest }) => {
     );
 };
 
-export const getUser = (user) => {
-    const { email, successfulLogin, jwt, userid } = user;
-    return { email, successfulLogin, jwt, userid };
-};
 
 const Auth = () => {
     const [user, setuser] = useState([]);
-
-
+    const [jwt, setjwt] = useState([])
     const signIn = async (email, password) => {
         try {
-            console.log(email.current.value)
-            console.log(password.current.value)
             await axios
-                .post(process.env.REACT_APP_BASE_URL + "/login", {
+                .post(url + "/login", {
                     email: email.current.value,
                     password: password.current.value,
                 })
                 .then((response) => {
                     if (response.data.statusCode === 200) {
-                        localStorage.setItem("jwt", response.data.token);
-                        localStorage.setItem("email", response.data);
-                        console.log(response)
+                        setjwt(response.data.token)
                         setuser(response.data)
                     }
-                    console.log(response)
                 });
         } catch (e) {
-            console.log(e)
             alert("Login Request Failed : 400");
             // }
         }
@@ -77,27 +67,24 @@ const Auth = () => {
             return;
         try {
             await axios
-                .post(process.env.REACT_APP_BASE_URL + "/signup", {
+                .post(url + "/signup", {
                     email: user.email.current.value,
                     password: user.password.current.value,
                 }).then((response) => {
-                    console.log(response)
-                    setuser(response.data)
+                    setjwt(response.data.jwt)
                 })
         }
         catch (e) {
-            console.log("this is getting called ");
-            console.log(e);
-            return false;
+            console.error(e);
         };
     }
 
     const logout = () => {
-        setuser(undefined)
-        localStorage.removeItem("jwt")
+        setjwt(undefined)
     }
 
     return {
+        jwt,
         user,
         signIn,
         signUp,

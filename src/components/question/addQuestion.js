@@ -8,10 +8,11 @@ require('dotenv').config()
 
 
 export default function AddQuestion() {
+  const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
 
   const { register, handleSubmit } = useForm({ shouldUseNativeValidation: true });
   const onSubmit = async data => {
-    axios.post(process.env.REACT_APP_BASE_URL + "/question/create", data, headers).then((res) => {
+    axios.post(url + "/question/create", data, headers).then((res) => {
       console.log(res.data)
     })
   };

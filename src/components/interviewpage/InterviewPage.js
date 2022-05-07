@@ -55,9 +55,9 @@ export default function InterviewPage() {
       <div className="Questions"><Questions questions={questions} /></div>
       <div className="VideoCall "><Video constraints={constraints} /></div>
       <div className="messages">
-        <div className="Final-Messages ">
+        {/* <div className="Final-Messages ">
           <ChatRoom />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ require('dotenv').config()
 const axios = require('axios')
 const AuthContext = createContext();
 
+const url = process.env.REACT_APP_BASE_URL == undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
 
 export const AuthProvider = (props) => {
   const auth = Auth();
@@ -15,11 +16,12 @@ export const AuthProvider = (props) => {
 export const useAuth = () => useContext(AuthContext);
 export const PrivateRoute = ({ children, ...rest }) => {
   const auth = useAuth();
+  // validate auth every time this component initializes, that may help 
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        localStorage.getItem("jwt") && auth.user ? (
+        auth.jwt ? (
           children
         ) : (
           <Redirect
@@ -41,15 +43,13 @@ export const getUser = (user) => {
 
 const Auth = () => {
   const [user, setuser] = useState([]);
-
+  const [jwt, setjwt] = useState()
 
   const signIn = async (email, password) => {
     try {
-      console.log(email.current.value)
-      console.log(password.current.value)
-      console.log(process.env.REACT_APP_BASE_URL)
+
       await axios
-        .post(process.env.REACT_APP_BASE_URL + "/login", {
+        .post(url + "/login", {
           email: email.current.value,
           password: password.current.value,
         })
@@ -77,7 +77,7 @@ const Auth = () => {
       return;
     try {
       await axios
-        .post(process.env.REACT_APP_BASE_URL + "/signup", {
+        .post(url + "/signup", {
           email: user.email.current.value,
           password: user.password.current.value,
         }).then((response) => {
