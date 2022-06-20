@@ -6,7 +6,6 @@ import Register from "./components/auth/register";
 import InterviewPage from "./components/interviewpage/InterviewPage";
 import ProfilePage from "./components/profile/profilepage";
 import AddQuestion from "./components/question/addQuestion";
-import HomePage from "./components/home/_home";
 import Home from "./components/home/Home";
 import { PrivateRoute } from "./components/auth/authContext";
 import { AuthProvider } from "./components/auth/authContext";
@@ -23,7 +22,7 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Switch>
-            <PrivateRoute exact path="/" component={Home} ></PrivateRoute>
+            <PrivateRoute exact path="/" component={Home}/>
             <PrivateRoute path='/setup/:id'>
               <SetupPage />
             </PrivateRoute>
@@ -33,14 +32,13 @@ function App() {
             <PrivateRoute path="/find-host" component={FindHost} ></PrivateRoute>
             <PrivateRoute path="/find-candidate" component={FindCandiate} ></PrivateRoute>
             <PrivateRoute path="/profile" component={ProfilePage} ></PrivateRoute>
-            <PrivateRoute path="/register" component={Register} />
-            <PrivateRoute path="/login" component={Login} />
             <PrivateRoute path="/search" component={SearchPeerPage}></PrivateRoute>
             <PrivateRoute path="/addproblem" component={AddQuestion} ></PrivateRoute>
             <PrivateRoute path="/boop" component={BoopButton} ></PrivateRoute>
             <PrivateRoute path={'/setupInterview'} component={SetQuestionsPage}></PrivateRoute>
             <Route path="*" component={page_not_found}></Route>
           </Switch>
+
         </BrowserRouter>
       </AuthProvider>
     </div>

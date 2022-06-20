@@ -1,14 +1,16 @@
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import "./setuppage.css"
 
 export default function SetupPage() {
     const videoRef = useRef(null);
     const { id } = useParams();
+    console.log(id)
     const [isaudio, setisaudio] = useState(true);
     const [isvideo, setisvideo] = useState(true)
     const [stream, setstream] = useState()
+    const location = useLocation(); 
     // const [constraints, setconstraints] = useState({ audio: isaudio, video: isvideo })
     const [isstarted, setisstarted] = useState(false)
     const getVideo = async () => {
@@ -73,7 +75,12 @@ export default function SetupPage() {
                         }}
                     >
                         <button className='offset joinbutton'  > Join Now </button>
+
+                        
+               
                     </Link>
+
+                    <button className='offset' onClick={() => {navigator.clipboard.writeText(location.pathname)}}>Share Link</button>
                 </div>
             </div>
         </div >

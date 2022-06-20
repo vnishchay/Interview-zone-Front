@@ -90,6 +90,7 @@
 
 .container {
   top: 20%;
+  background-color: white;
   flex-direction: column;
   align-items: center;
   justify-content: center;

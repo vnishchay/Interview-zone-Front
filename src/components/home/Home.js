@@ -1,20 +1,62 @@
 import React, { useState, useEffect, useRef } from "react";
 import { v4 } from "uuid";
 import { useAuth } from "../auth/authContext";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import "./_home.css"
+import "./home.css"
 import { Link } from "react-router-dom";
-const { headers } = require("../config")
+import Navbar from "./navbar";
+import Login from "../auth/login";
+import axios from "axios";
+import { headers } from "../config";
+
+
+export const create = ( history)=>{
+        
+        const id = v4(); 
+        try {
+            axios.post('http://localhost:3001' + "/interview/create", {interviewID : id }, headers).then((res) => {
+                     console.log(res)
+                        if(res.statusText === 'OK')
+                        history.push(`/setup/${id}`)
+                    
+            })
+            
+        } catch (err) {
+            console.log("Can't Create an Interview" + err)
+        }
+
+}
+
+
 
 export default function Home() {
-    const auth = useAuth();
-    useEffect(() => {
-
-    }, [])
-
+    const {state} = useAuth(); 
+    const history = useHistory(); 
+    const [url , seturl] = useState(); 
+    const find = ()=>{
+          console.log(url)
+          const id = url.split('/'); 
+          console.log(id[id.length -1 ])
+          axios.post('http://localhost:3001/interview/findfilter', {interviewID : id[id.length -1]},  headers ).then(res=>{
+                     if(res.statusText === 'OK') {
+                          console.log(res);
+                          if(res.data.data && res.data.data.length > 0 ) {
+                                        const id = res.data.data[0].id ; 
+                                        axios.post('http://localhost:3001/interview/update/' + id, {idOfParticipant : 'update'}, headers).then(res=>{
+                                            history.push('/setup/' + id); 
+                                      })
+                                    } 
+                          }
+                     }
+          )
+    }
     return (
         <div>
-            {/* //todo : add signin / sign up button on right corner */}
+            {  state.isAuthenticated ?
+            <>
+            <Navbar></Navbar>
+             
             <section className="c-section">
                 <h2 className="c-section__title"><span>Interview Zone </span></h2>
                 <ul className="c-services">
@@ -23,24 +65,26 @@ export default function Home() {
                         <p>We leverage the concept of mobile-first design. Through our work, we focus on designing an experience that works across different screen sizes.</p>
                     </div>
                     <div className="c-services__item">
-                        <a href="/find-host"> <h3>Take Interview </h3>
+                        <Link to="/find-host"> <h3>Take Interview </h3>
                             <button className="raise"> Start Now </button>
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="c-services__item">
-                        <h3>Audio Call feature</h3>
-                        <p>We are Front End masters with a deep focus on HTML, CSS. The result of our work is a responsive, accessible, and performant websites. Either you have the design ready and want us to code it, or you want us to do both design and code, we&rsquo;re happy to do so.</p>
+                        <h3>Create Interview Now </h3>
+                        <p>
+                            <button onClick={()=>create(history)} >Start Here !</button>
+                        </p>
                     </div>
                     <div className="c-services__item" style={{ background: "#7DEBB7" }}>
                         <h3>Join using Link</h3>
                         <br></br>
                         <div className="inputWithButton">
                             <div className="item">
-                                <input className="searchInpt" type="text" placeholder="Join Interview" />
+                                <input className="searchInpt" type="text" placeholder="Join Interview" onChange={(e)=>seturl(e.target.value)} />
                             </div>
                             <div className="item">
-                                <button className="btnSearch btnAqua">
+                                <button className="btnSearch btnAqua" onClick={find}>
 
                                     <i className="icon">
                                         <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,14 +100,17 @@ export default function Home() {
                         <p>To reach more customers and the goals of your business, a mobile application is necessary these days. We will work on the app design from scratch to final tested prototype.</p>
                     </div>
                     <div className="c-services__item">
-                        <a href="/find-candidate">
+                        <Link to="/find-candidate">
                             <h3>Get Interview Now</h3>
                             <button className="raise">Start Now</button>
-                        </a>
+                        </Link>
                     </div>
                 </ul>
+            
             </section>
+            </> : <Login></Login>
+} 
         </div>
-
+            
     );
 }

@@ -1,27 +1,56 @@
-import React, { useState, createContext, useContext, useEffect } from "react";
-import { Route, Redirect } from "react-router-dom";
+import React, { createContext, useContext ,  useReducer } from "react";
+import { Route, Redirect} from "react-router-dom";
 require('dotenv').config()
-const axios = require('axios')
 const AuthContext = createContext();
 
-const url = process.env.REACT_APP_BASE_URL == undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
+const initialState = {
+  isAuthenticated: false,
+  user: null,
+  token: null,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "LOGIN":
+      localStorage.setItem('user', action.payload.user);
+      localStorage.setItem('token',action.payload.token);
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload.user,
+        token: action.payload.token
+      };
+    case "LOGOUT":
+      localStorage.clear();
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+        token: null,
+      };
+    default:
+      return state;
+  }
+};
 
 export const AuthProvider = (props) => {
-  const auth = Auth();
+  const [state, dispatch] = useReducer(reducer, initialState); 
   return (
-    <AuthContext.Provider value={auth}>{props.children}</AuthContext.Provider>
+    <AuthContext.Provider value={{state, dispatch}}>{props.children}</AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+
 export const PrivateRoute = ({ children, ...rest }) => {
-  const auth = useAuth();
-  // validate auth every time this component initializes, that may help 
+  const {state} = useAuth(); 
   return (
+    
     <Route
       {...rest}
       render={({ location }) =>
-        auth.jwt ? (
+        state.isAuthenticated ? (
           children
         ) : (
           <Redirect
@@ -36,74 +65,3 @@ export const PrivateRoute = ({ children, ...rest }) => {
   );
 };
 
-export const getUser = (user) => {
-  const { email, successfulLogin, jwt, userid } = user;
-  return { email, successfulLogin, jwt, userid };
-};
-
-const Auth = () => {
-  const [user, setuser] = useState([]);
-  const [jwt, setjwt] = useState()
-
-  const signIn = async (email, password) => {
-    try {
-
-      await axios
-        .post(url + "/login", {
-          email: email.current.value,
-          password: password.current.value,
-        })
-        .then((response) => {
-          if (response.data.statusCode === 200) {
-            localStorage.setItem("jwt", response.data.token);
-            localStorage.setItem("email", response.data);
-            console.log(response)
-            setuser(response.data)
-          }
-          console.log(response)
-        });
-    } catch (e) {
-      console.log(e)
-      alert("Login Request Failed : 400");
-      // }
-    }
-  }
-
-  const signUp = async (user) => {
-    if (
-      user.email.current.value === null ||
-      user.password.current.value === null
-    )
-      return;
-    try {
-      await axios
-        .post(url + "/signup", {
-          email: user.email.current.value,
-          password: user.password.current.value,
-        }).then((response) => {
-          console.log(response)
-          setuser(response.data)
-        })
-    }
-    catch (e) {
-      console.log("this is getting called ");
-      console.log(e);
-      return false;
-    };
-  }
-
-  const logout = () => {
-    setuser(undefined)
-    localStorage.removeItem("jwt")
-  }
-
-  return {
-    user,
-    signIn,
-    signUp,
-    logout
-  }
-};
-
-
-export default Auth;

@@ -20,7 +20,7 @@ export default function InterviewPage() {
 
   useEffect(() => {
     const getquestion = async () => {
-      const url = process.env.REACT_APP_BASE_URL + "/question/get";
+      const url = 'http://localhost:3001' + "/question/get";
       await axios
         .get(
           url, headers)

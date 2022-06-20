@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { v4 } from "uuid";
-import { useAuth } from "../auth/authContext";
-import { useHistory } from "react-router-dom";
-import "./home.css"
 import { Link } from "react-router-dom";
-const axios = require('axios')
-require('dotenv').config()
-const { headers } = require("../config")
+import { headers } from "../config";
+import axios from "axios";
+import { v4 } from "uuid";
+import { useHistory } from "react-router-dom";
+import { useAuth } from "../auth/authContext";
+
 
 export default function FindHost() {
+
+
     const [link, setlink] = useState("");
     const auth = useAuth();
     const [email, setemail] = useState();
@@ -16,9 +17,7 @@ export default function FindHost() {
     const joinmeet = useRef("");
     const [loading, setloading] = useState()
     const [interviewList, setinterviewList] = useState([]);
-
     const [interview, setinterview] = useState([]);
-
     const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
 
     useEffect(() => {
@@ -31,24 +30,6 @@ export default function FindHost() {
             console.log(interviewList)
         })
     }, [])
-
-
-    useEffect(() => {
-        if (auth.jwt == undefined || auth.user === undefined) {
-            setemail("guest");
-        } else {
-            setemail(auth.user.email);
-        }
-    }, [auth]);
-
-    const data =
-    {
-        "typeOfInterview": "Job",
-        "numberOfQuestions": 8,
-        "levelOfQuestions": "medium",
-        "interviewID": link,
-        "idOfHost": auth.user.userid
-    }
 
     const route = (e) => {
         e.preventDefault();
@@ -69,23 +50,7 @@ export default function FindHost() {
         history.push('/')
     }
 
-    const saveInterviewData = async () => {
-        setloading(true)
-        try {
-            axios.post(url + "/interview/create", data, headers).then((res) => {
-                setinterview(res.data.data);
-                setloading(false)
-            })
-        } catch (err) {
-            console.log("Can't Create an Interview" + err)
-            setloading(false)
-        }
-    }
 
-
-    useEffect(() => {
-        saveInterviewData();
-    }, [])
 
 
     return (
@@ -93,7 +58,7 @@ export default function FindHost() {
 
             <main>
                 <div className="box1">
-                    <img className="img-hm" src="images/undraw_positive_attitude_re_wu7d.svg"></img>
+                    {/* <img className="img-hm" src="images/undraw_positive_attitude_re_wu7d.svg"></img>
 
                     <div className="card" id="col1"
                     >
@@ -161,7 +126,7 @@ export default function FindHost() {
                     </div>
 
                 </div>
-                <div>
+                <div> */}
                     <h1>Find Candidates </h1>
                     {
                         // id: "62651a67f21f90f0bcc4ba31"
@@ -185,6 +150,6 @@ export default function FindHost() {
                 <div maxWidth="md"></div>
             </main>
         </div>
-
+//    return (<div> FIND HOST </div>
     );
 }
