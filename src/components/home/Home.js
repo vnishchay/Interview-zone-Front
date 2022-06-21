@@ -12,14 +12,14 @@ import { headers } from "../config";
 
 
 export const create = ( history)=>{
-        
         const id = v4(); 
         try {
             axios.post('http://localhost:3001' + "/interview/create", {interviewID : id }, headers).then((res) => {
                      console.log(res)
-                        if(res.statusText === 'OK')
-                        history.push(`/setup/${id}`)
-                    
+                        if(res.statusText === 'OK'){
+                            axios.put('http://localhost:3001/')
+                            history.push(`/setup/${id}`)
+                        }
             })
             
         } catch (err) {
@@ -27,7 +27,6 @@ export const create = ( history)=>{
         }
 
 }
-
 
 
 export default function Home() {
@@ -65,7 +64,7 @@ export default function Home() {
                         <p>We leverage the concept of mobile-first design. Through our work, we focus on designing an experience that works across different screen sizes.</p>
                     </div>
                     <div className="c-services__item">
-                        <Link to="/find-host"> <h3>Take Interview </h3>
+                        <Link to="/find-host"> <h3>Find interviewer</h3>
                             <button className="raise"> Start Now </button>
                         </Link>
                     </div>

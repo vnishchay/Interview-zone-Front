@@ -25,7 +25,7 @@ const handleFormSubmit = event => {
     });
     axios.post( 'http://localhost:3001/login' ,
       {
-        email : data.email,
+        username : data.email,
         password: data.password
       }
     )

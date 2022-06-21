@@ -9973,10 +9973,10 @@
   dependencies:
     "prop-types" "^15.5.6"
 
-"react-hook-form@^7.26.1":
-  "integrity" "sha512-DzjiM6o2vtDGNMB9I4yCqW8J21P314SboNG1O0obROkbg7KVS0I7bMtwSdKyapnCPjHgnxc3L7E5PEdISeEUcQ=="
-  "resolved" "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.30.0.tgz"
-  "version" "7.30.0"
+"react-hook-form@^7.32.2":
+  "integrity" "sha512-F1A6n762xaRhvtQH5SkQQhMr19cCkHZYesTcKJJeNmrphiZp/cYFTIzC05FnQry0SspM54oPJ9tXFXlzya8VNQ=="
+  "resolved" "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.32.2.tgz"
+  "version" "7.32.2"
 
 "react-is@^16.13.1", "react-is@^16.3.2", "react-is@^16.6.0", "react-is@^16.7.0":
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="

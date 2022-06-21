@@ -10,23 +10,21 @@ const Navbar = ()=>{
        })
      }
      return (
-        <div class="nav">
-        <div class="nav-header">
-          <div class="nav-title">
+        <div className="nav">
+        <div className="nav-header">
+          <div className="nav-title">
           </div>
         </div>
-        <div class="nav-btn">
-          <label for="nav-check">
-            <span></span>
-            <span></span>
-            <span></span>
-          </label>
+        <div className="nav-btn">
+          
         </div>
         
-        <div class="nav-links">
+        <div className="nav-links">
           <a href="//github.com/codernishchay/interview-zone" target="_blank">Github</a>
+            {state.isAuthenticated && <Link to='/profile'>Profile</Link>}
            {!state.isAuthenticated && <Link to={'/login'} >Login</Link>}
            { !state.isAuthenticated && <Link to={'/register'} >Signup</Link> } 
+           {state.isAuthenticated && <Link to='/chatbox'>Messages</Link>}
            { state.isAuthenticated && <button onClick={handleLogout}>Logout</button> }
         </div>
       </div>

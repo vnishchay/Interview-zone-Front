@@ -40,7 +40,7 @@ export default function SearchPeerPage() {
             <footer>
                 <div className="search-container">
                     <div className="row">
-                        <p>Coded by F. Cortés for the free Code Camp Front-End Development certification. 2016.</p>
+                        {/* <p>Coded by F. Cortés for the free Code Camp Front-End Development certification. 2016.</p> */}
                     </div>
                 </div>
             </footer>

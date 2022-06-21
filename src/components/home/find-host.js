@@ -1,155 +1,67 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { headers } from "../config";
-import axios from "axios";
-import { v4 } from "uuid";
-import { useHistory } from "react-router-dom";
-import { useAuth } from "../auth/authContext";
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
+import { headers } from "../config";
 
 export default function FindHost() {
+        const [people, setpeople] = useState([]);
+        useEffect(() => {
+                axios.get('http://localhost:3001/user/interviewer', headers).then((res) => {
+                         if(res.statusText === 'OK') {
+                                setpeople(res.data.data); 
+                         }
+                })
+        }, [])
+        return (
+                <div>
+                        <h1>Explore </h1>
+                        <div className="boxContiner">
+                                <div className="boxBody">
+                        { people && people.map((user, index )=> {
+                                    return (   
+                                        <Link to= {`/profile/${user.username}`}>
+                                        <div className="card">
+                                                <div className="profileImage"></div>
+                                                <div className="nameFamily">
+                                                        <p>{user.username}</p>
+                                                        <span>FrontEnd Developer</span>
+                                                </div>
+                                                <div className="numbers">
+                                                        <div className='socialMediaSingle'>
+                                                                <span>103</span>
+                                                                <p>Post</p>
+                                                        </div>
+                                                        <div className='socialMediaSingle'>
+                                                                <span>203</span>
+                                                                <p>Followers</p>
+                                                        </div>
+                                                        <div className='socialMediaSingle'>
+                                                                <span>333</span>
+                                                                <p>Following</p>
+                                                        </div>
+                                                </div>
 
+                                                <div className="linkBtnk">
+                                                        <a href="">Message</a>
+                                                </div>
+                                                <div className="socialMedia">
+                                                        <div className="mail">
 
-    const [link, setlink] = useState("");
-    const auth = useAuth();
-    const [email, setemail] = useState();
-    const history = useHistory();
-    const joinmeet = useRef("");
-    const [loading, setloading] = useState()
-    const [interviewList, setinterviewList] = useState([]);
-    const [interview, setinterview] = useState([]);
-    const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
+                                                        </div>
+                                                        <div className="linkdin">
 
-    useEffect(() => {
-        axios.get(url + '/interview/find', headers).then((res) => {
-            var data = res.data.data;
-            if (res && data) {
-                console.log(data)
-                data.forEach(element => setinterviewList((interviewList) => [...interviewList, element]));
-            }
-            console.log(interviewList)
-        })
-    }, [])
-
-    const route = (e) => {
-        e.preventDefault();
-        history.push(link);
-    };
-
-
-    const joinMeet = (e) => {
-        e.preventDefault();
-        history.push(joinmeet.current.value);
-    };
-
-    const interviewID = v4();
-
-
-    const handleLogout = () => {
-        auth.logout();
-        history.push('/')
-    }
-
-
-
-
-    return (
-        <div className="homepage">
-
-            <main>
-                <div className="box1">
-                    {/* <img className="img-hm" src="images/undraw_positive_attitude_re_wu7d.svg"></img>
-
-                    <div className="card" id="col1"
-                    >
-                        <div className="logout-button">
-                            {
-                                auth.jwt ? <button className="pulse" onClick={handleLogout}> logout </button> :
-                                    <Link to="/login"><button className="pulse"> Sign In</button></Link>
-                            }
-                            {
-                                auth.jwt && <button className="pulse" >Account</button>
-                            }
-                        </div>
-                        <div>
-                            <div justify="center">
-                                <div >
-                                    <button
-
-                                        className="raise"
-                                        onClick={() => navigator.clipboard.writeText(link)}
-                                    >
-                                        {link !== ""
-                                            ? window.location.href + link
-                                            : "Create Link"}
-                                    </button>
-                                    <div className="mb-2">
-
-                                    </div>
-                                    <div></div>
+                                                        </div>
+                                                        <div className="phone">
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        </Link>
+)})} 
                                 </div>
-                            </div>
 
-                            <div container spacing={2} justifyContent="center">
-                                {!loading ? <button
-                                    className="raise"
-                                    onClick={() => {
-                                        setlink(`/setup/${interviewID}`)
-                                        saveInterviewData();
-                                    }}
-                                >
-                                    Create Interview
-                                </button> : <img src="/images/buffering.png"></img>}
-                            </div>
-                            <div container spacing={2} justifyContent="center">
-                                {!loading && <button
-                                    className="raise"
-                                    onClick={route}
-                                >
-                                    Go to interview
-                                </button>
-                                }
-                            </div>
-                            {!loading && <div className="bx-jnm" >
-                                <input className="inp-hm" ref={joinmeet}></input>
-                                <button
-                                    className="raise btn-meet"
-                                    onClick={joinMeet}
-                                >
-                                    Join Meet
-                                </button>
-                            </div>
-                            }
-
-                            <Link to={'/setupInterview'}> <button className="offset"> Setup Interview </button>  </Link>
                         </div>
-                    </div>
 
                 </div>
-                <div> */}
-                    <h1>Find Candidates </h1>
-                    {
-                        // id: "62651a67f21f90f0bcc4ba31"
-                        // interviewID: ""
-                        // levelOfQuestions: "medium"
-                        // numberOfQuestions: "8"
-                        // questions: []
-                        // typeOfInterview: "Job"
-                        interviewList.length > 0 && interviewList.map((interview) => {
-                            return <div className="card-interview"><ul key={interview._id}>
-                                <li><h2>Interview ID</h2> {interview.interviewID}</li>
-                                <li><h2>Level of Question</h2> {interview.levelOfQuestions}</li>
-                                <li><h2>Number of questions</h2> {interview.numberOfQuestions}</li>
-                                <li><h2>Type of Interview</h2> {interview.typeOfInterview}</li>
-                                <button className="offset">Send Request</button>
-                            </ul>
-                            </div>
-                        })
-                    }
-                </div>
-                <div maxWidth="md"></div>
-            </main>
-        </div>
-//    return (<div> FIND HOST </div>
-    );
+        )
 }
