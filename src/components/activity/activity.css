@@ -1,0 +1,45 @@
+.activity { 
+     min-height: 100vh;
+     min-width: 100vw;
+     max-height: max-content;
+     padding: 40px;
+     margin: auto;
+     display: flex;
+     flex-direction: column;
+     justify-content:center;
+}
+
+.activity > div {
+    font-size: 30px;
+    color: black;
+}
+
+.activity > ul {
+     max-width: 100%;
+     min-width: 70%;
+}
+
+.activity-not-found {
+    background-color: rgb(232, 228, 228);
+    color: gray;
+    font-size: 25;
+    padding: 30px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+
+.btn-0 {
+    background-color: white;
+    width: fit-content;
+  }
+  .btn-0:hover {
+     background-color: blue;
+     color: white;
+  }
+  .btn-0:hover:before {
+    transform: translateX(0);
+  }
+  
+  

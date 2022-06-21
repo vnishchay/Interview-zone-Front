@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export default function Register() {
   const history = useHistory()
@@ -13,7 +13,7 @@ export default function Register() {
     axios.post( 'http://localhost:3001/signup' ,data
     ).then(res => {
         if (res.statusText === 'OK') {
-           setisdone((pre)=> !pre)
+             setisdone((pre)=> true )
         }
       })
       .catch(error => {
@@ -25,9 +25,9 @@ export default function Register() {
          if(username !== '')
          axios.post('http://localhost:3001/verifyusername', {username : username} ).then((res)=>{
                    if(res.data.status === 'success'){
-                       setisfinal((pre)=>!pre); 
+                       setisfinal((pre)=>true); 
                    }else {
-                       setisfinal((pre)=> !pre)
+                       setisfinal((pre)=> false)
                    }
          })
   },[username])
@@ -52,6 +52,8 @@ export default function Register() {
                 <button onClick={()=>{history.push('/')}}>Login</button>
             </div>
 } 
+      <Link to={'/'}>Already Registerd ? login here </Link>
       </div>
+      
   );
 }

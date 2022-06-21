@@ -16,10 +16,13 @@ import ChatBox from "./components/chat/chatBox";
 import SetQuestionsPage from "./components/setupInterview/selectProblemPage"
 import FindCandiate from "./components/home/find-candidate";
 import FindHost from "./components/home/find-host";
+import Navbar from "./components/home/navbar";
+import Activity from "./components/activity/activity";
+
 
 function App() {
   return (
-    <div>
+    <div className="root">
       <AuthProvider>
         <BrowserRouter>
           <Switch>
@@ -30,17 +33,43 @@ function App() {
             <PrivateRoute path='/interview/:id'>
               <InterviewPage />
             </PrivateRoute>
-            <Route path={'/login'} component={Login}></Route>
+            {/* <Route path={'/login'} component={Login}></Route> */}
             <Route path={'/register'} component={Register}></Route>
-            <PrivateRoute path="/find-host" component={FindHost} ></PrivateRoute>
+            <PrivateRoute path="/find-host"  >
+              <Navbar></Navbar>
+              <FindHost></FindHost>
+            </PrivateRoute>
             <PrivateRoute path="/find-candidate" component={FindCandiate} ></PrivateRoute>
-            <PrivateRoute path="/profile" component={ProfilePage} ></PrivateRoute>
-            <Route path="/profile/:username" component={ProfilePage} ></Route>
-            <PrivateRoute path="/search" component={SearchPeerPage}></PrivateRoute>
-            <PrivateRoute path="/addproblem" component={AddQuestion} ></PrivateRoute>
-            <PrivateRoute path="/boop" component={BoopButton} ></PrivateRoute>
-            <PrivateRoute path={'/setupInterview'} component={SetQuestionsPage}></PrivateRoute>
-            <PrivateRoute path={'/chatbox'} component={ChatBox} ></PrivateRoute>
+            <PrivateRoute exact path="/profile"  >
+                 <Navbar></Navbar>
+                 <ProfilePage></ProfilePage>
+            </PrivateRoute> 
+            <Route path="/profile/:id" >
+                 <Navbar></Navbar>
+                 <ProfilePage></ProfilePage>
+            </Route>
+            <PrivateRoute path="/search" >
+                    <Navbar></Navbar>
+                    <SearchPeerPage></SearchPeerPage>
+            </PrivateRoute>
+            <PrivateRoute path="/addproblem" >
+                 <Navbar></Navbar>
+                 <AddQuestion></AddQuestion>
+            </PrivateRoute>
+            <PrivateRoute path="/boop" component={BoopButton} >
+            </PrivateRoute>
+            <PrivateRoute path={'/setupInterview'}>
+                  <Navbar></Navbar>
+                  <SetQuestionsPage></SetQuestionsPage>
+            </PrivateRoute>
+            <PrivateRoute path={'/chatbox'} >
+                      <Navbar></Navbar>
+                      <ChatBox></ChatBox>
+            </PrivateRoute>
+            <PrivateRoute path={'/activity'} >
+                      <Navbar></Navbar>
+                      <Activity></Activity>
+            </PrivateRoute>
             <Route path="*" component={page_not_found}></Route>
           </Switch>
 

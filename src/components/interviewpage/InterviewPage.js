@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import TextEditor from "../texteditor/textEditor";
 import Questions from "../question/questions";
 import axios from "axios";
-import ChatRoom from "../chat/chat";
 import "./interview.css"
 import { useEffect } from "react"
 import Video from "../videocall/video"
 import PrimarySearchAppBar from "./appbar";
 import { useLocation } from "react-router-dom";
-const  headers  = require("../config")
+import headers from "../config.js"
 require('dotenv').config()
 
 
@@ -19,10 +18,9 @@ export default function InterviewPage() {
   const [questions, setquestions] = useState();
   const header = headers(); 
   useEffect(() => {
-    const getquestion = async () => {
+      if(header !== undefined) {
       const url = 'http://localhost:3001' + "/question/get";
-      await axios
-        .get(
+       axios.get(
           url, header)
         .then((res) => {
           setquestions(res.data.data);
@@ -30,10 +28,7 @@ export default function InterviewPage() {
         .catch((err) => {
           console.log(err);
         });
-    };
-    if(header !== undefined ) {
-    getquestion();
-    } 
+      } 
 
     if (questions && questions.length > 0) {
       for (let i = 0; i < questions.length; i++) {

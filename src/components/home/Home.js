@@ -11,6 +11,51 @@ import axios from "axios";
 import headers from "../config";
 
 
+export const sentInterviewRequest = (username, setstatus )=>{
+       console.log("sent interviwew request")
+       const header = headers(); 
+       if(header !== undefined) {
+           axios.post('http://localhost:3001/user/interviewRequest', {username : username}, header).then((res)=>{
+                  console.log(res)
+                  if(res.statusText === 'OK'){
+                         if(res.data.isConnection == false ) {
+                                 setstatus(1);  
+                         }else {
+                             setstatus(2); 
+                         }
+                  }else {
+                       setstatus(0); 
+                  }
+           })
+       }
+}
+
+export const sendFollowRequest = (username)=>{
+    const header = headers(); 
+    if(header !== undefined) {
+        axios.post('http://localhost:3001/user/followrequest', {username : username}, header).then((res)=>{
+               console.log(res)
+               if(res.statusText === 'OK'){
+                     console.log("Sent Interview Request")
+               }
+        })
+    }
+}
+
+export const sendconnectionRequest = (username)=>{
+    const header = headers(); 
+    if(header !== undefined) {
+        axios.post('http://localhost:3001/user/connectionrequest', {username : username}, header).then((res)=>{
+               console.log(res)
+               if(res.statusText === 'OK'){
+                     console.log("Sent Interview Request")
+               }
+        })
+    }
+}
+
+
+
 export const create = (history) => {
     const header = headers();
     const id = v4();
@@ -19,7 +64,7 @@ export const create = (history) => {
             axios.post('http://localhost:3001' + "/interview/create", { interviewID: id }, header).then((res) => {
                 console.log(res)
                 if (res.statusText === 'OK') {
-                    axios.put('http://localhost:3001/')
+                    // axios.put('http://localhost:3001/')
                     history.push(`/setup/${id}`)
                 }
             })

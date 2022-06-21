@@ -23,9 +23,11 @@ const Navbar = ()=>{
           <a href="//github.com/codernishchay/interview-zone" target="_blank">Github</a>
             {state.isAuthenticated && <Link to='/profile'>Profile</Link>}
            {!state.isAuthenticated && <Link to={'/login'} >Login</Link>}
-           { !state.isAuthenticated && <Link to={'/register'} >Signup</Link> } 
-           {state.isAuthenticated && <Link to='/chatbox'>Messages</Link>}
+           { !state.isAuthenticated && <Link to={'/register'} >Signup</Link> }    
+           {state.isAuthenticated && <Link to='/activity'>Activity</Link>}
+           {state.isAuthenticated && <Link to='/find-host'>Explore</Link>}
            { state.isAuthenticated && <button onClick={handleLogout}>Logout</button> }
+
         </div>
       </div>
      )

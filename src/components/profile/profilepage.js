@@ -3,74 +3,78 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import headers from '../config';
 import "./profilepage.css"
+import { sendFollowRequest, sentInterviewRequest, sendconnectionRequest } from '../home/Home';
+import ProfileCard from '../userCards/profileCards';
+
 
 export default function ProfilePage() {
-    const {username} = useParams(); 
+    const { id } = useParams(); 
     const [data, setData ] = useState(); 
+    const [role , setrole] = useState(false); 
+    
     const header = headers(); 
     useEffect(()=>{
-        if(!username ||  username !== '' || username !== null && header){
-                 axios.get('http://localhost:3001/findSingleProfileWithFilter', {username : username}, header ).then((res)=>{
-                       if(res.statusText === 'OK'){
-                              setData(res.data);
-                       }
-                 })
-            }else {
-            if(header)
+        if(header !== undefined && id === undefined ){
             axios.get('http://localhost:3001/user/profile', header).then(res=>{
                 if(res.statusText === 'OK')
                  setData(res.data); 
             })
+        } else {
+            if(header !== undefined) {
+            axios.post('http://localhost:3001/user/findSingleProfileWithFilter', {username : id },  header).then(res=>{
+                console.log(res)
+                if(res.statusText === 'OK')
+                 console.log(res)
+                 setData(res.data); 
+                 if(res.data && res.data.user) {
+                     setrole(res.data.user.ishost); 
+                 }
+            })
         }
+    } 
     },[])
+
+    const acceptConnection = async(id)=>{
+        axios.post('http://localhost:3001/user/acceptConnection', {id : id}, header).then((res)=> {
+                  console.log(res) 
+        })
+}
+
+    const toggleRole = ()=>{
+          setrole((pre)=> !pre); 
+          if(header !== undefined) {
+              axios.put('http://localhost:3001/user/profile', {ishost : true} , header).then((res)=>{
+                    if(res.statusText !== 'OK'){
+                         setrole((pre)=> !pre); 
+                    }
+                    console.log(res)
+              })
+          }
+    }
+
     return (
-        <div> { data && data.user && 
+        <div className='profile-page'>
+         { data && data.user && 
             <div className="content-profile-page">
-                <div className="profile-user-page profile-card">
+                <div className="profile-user-page profile-">
                     <div className="img-user-profile">
-                        <img className="profile-bgHome" src="https://37.media.tumblr.com/88cbce9265c55a70a753beb0d6ecc2cd/tumblr_n8gxzn78qH1st5lhmo1_1280.jpg" />
                         <img className="avatar" src="http://gravatar.com/avatar/288ce55a011c709f4e17aef7e3c86c64?s=200" alt="jofpin" />
                     </div>
-                    {<button>Follow</button>}
+                   
                     <div className="user-profile-data">
                         <h1>{data.user.username}</h1>
                         <h3>{data.user.email}</h3>
                         <p>{data.github}</p>
                         <p>{data.user.country}</p>
-                    </div>
+                    <button onClick={()=> sendFollowRequest(data.user.username)}> Follow </button>
+                    <button onClick={()=> sentInterviewRequest(data.user.username)}> Interview Request </button>
+                    <button onClick={()=> sendconnectionRequest(data.user.username)}> Connect </button>
+                    <button onClick={()=> acceptConnection(data.user._id)}> Accept Connection</button>
+                    </div> 
+                   <span> Role :  { role ?  <h3>Interviewer</h3> : <h3>Candidate</h3>} </span>
+                    <button onClick={toggleRole}>Change role ? </button>
                     <div className="description-profile">{data.description}<a href="https://twitter.com/codernishchay" title="bullgit"><strong>@bullgit</strong></a> | I love to create small things for the internet!</div>
-                    <h2>Interviews </h2>
-                    <ul className="data-user">
-                        {data.user.interviews && data.user.interviews.map((interview, index)=>{
-                                return <li>{interview}</li>
-                        })}
-                    </ul>
-                    <h2>Connections </h2>
-                    <ul className="data-user">
-                        {data.user.connections && data.user.connections.map((interview, index)=>{
-                                return <li>{interview}</li>
-                        })}
-                    </ul>
-                    <h2> Follow Requests  </h2>
-                    <ul className="data-user">
-                        {data.user.pendingFollowers && data.user.pendingFollowers.map((interview, index)=>{
-                                return <li>{interview}</li>
-                        })}
-                    </ul>
-                    <h2>Followers </h2>
-                    <ul className="data-user">
-                        {data.user.followers && data.user.followers.map((interview, index)=>{
-                                return <li>{interview}</li>
-                        })}
-                    </ul>
-                    <h2> Connection Requests </h2>
-                    <ul className="data-user">
-                        {data.user.pendingConnections && data.user.pendingConnections.map((interview, index)=>{
-                                return <li>{interview}</li>
-                        })}
-                    </ul>
-                    
-
+                  
                 </div>
             </div>
 

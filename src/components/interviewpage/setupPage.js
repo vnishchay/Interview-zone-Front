@@ -83,6 +83,6 @@ export default function SetupPage() {
                     <button className='offset' onClick={() => {navigator.clipboard.writeText(location.pathname)}}>Share Link</button>
                 </div>
             </div>
-        </div >
+        </div > 
     )
 }
