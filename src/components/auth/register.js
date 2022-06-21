@@ -10,16 +10,11 @@ export default function Register() {
   const [isfinal , setisfinal] = useState(false); 
   const [isdone, setisdone ] = useState(false); 
   const signup = (data) => {
-    console.log(data)
     axios.post( 'http://localhost:3001/signup' ,data
-    )
-      .then(res => {
-        console.log(res)
+    ).then(res => {
         if (res.statusText === 'OK') {
-          setisdone(true); 
-          return res ; 
+           setisdone((pre)=> !pre)
         }
-        throw res;
       })
       .catch(error => {
            throw error  
@@ -28,11 +23,11 @@ export default function Register() {
 
   useEffect(()=>{
          if(username !== '')
-         axios.post('http://localhost:3001/verifyusername', {username : username}).then((res)=>{
+         axios.post('http://localhost:3001/verifyusername', {username : username} ).then((res)=>{
                    if(res.data.status === 'success'){
-                       setisfinal(true); 
+                       setisfinal((pre)=>!pre); 
                    }else {
-                       setisfinal(false)
+                       setisfinal((pre)=> !pre)
                    }
          })
   },[username])

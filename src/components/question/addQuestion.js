@@ -1,20 +1,23 @@
 import axios from 'axios';
 import React from 'react'
 import { useForm } from "react-hook-form";
-import { headers } from '../config';
+import  headers  from '../config';
 import "./addQuestion.css";
 
 require('dotenv').config()
 
 
 export default function AddQuestion() {
+  const header = headers(); 
   const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
 
   const { register, handleSubmit } = useForm({ shouldUseNativeValidation: true });
   const onSubmit = async data => {
-    axios.post(url + "/question/create", data, headers).then((res) => {
+    if(header !== undefined) {
+    axios.post(url + "/question/create", data, header).then((res) => {
       console.log(res.data)
     })
+  } 
   };
 
   return (

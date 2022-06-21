@@ -8,7 +8,7 @@ import { useEffect } from "react"
 import Video from "../videocall/video"
 import PrimarySearchAppBar from "./appbar";
 import { useLocation } from "react-router-dom";
-const { headers } = require("../config")
+const  headers  = require("../config")
 require('dotenv').config()
 
 
@@ -17,13 +17,13 @@ export default function InterviewPage() {
   const { constraints } = location.state
   const [questionid, setquestionid] = useState();
   const [questions, setquestions] = useState();
-
+  const header = headers(); 
   useEffect(() => {
     const getquestion = async () => {
       const url = 'http://localhost:3001' + "/question/get";
       await axios
         .get(
-          url, headers)
+          url, header)
         .then((res) => {
           setquestions(res.data.data);
         })
@@ -31,7 +31,9 @@ export default function InterviewPage() {
           console.log(err);
         });
     };
+    if(header !== undefined ) {
     getquestion();
+    } 
 
     if (questions && questions.length > 0) {
       for (let i = 0; i < questions.length; i++) {

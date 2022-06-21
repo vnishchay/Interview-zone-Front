@@ -1,21 +1,23 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { headers } from '../config';
+import headers from '../config';
 import "./profilepage.css"
 
 export default function ProfilePage() {
     const {username} = useParams(); 
     const [data, setData ] = useState(); 
+    const header = headers(); 
     useEffect(()=>{
-        if(!username ||  username !== '' || username !== null){
-                 axios.get('http://localhost:3001/findSingleProfileWithFilter', {username : username}, headers ).then((res)=>{
+        if(!username ||  username !== '' || username !== null && header){
+                 axios.get('http://localhost:3001/findSingleProfileWithFilter', {username : username}, header ).then((res)=>{
                        if(res.statusText === 'OK'){
                               setData(res.data);
                        }
                  })
             }else {
-            axios.get('http://localhost:3001/user/profile', headers).then(res=>{
+            if(header)
+            axios.get('http://localhost:3001/user/profile', header).then(res=>{
                 if(res.statusText === 'OK')
                  setData(res.data); 
             })

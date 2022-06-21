@@ -2,16 +2,19 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { headers } from "../config";
+import headers  from "../config";
 
 export default function FindHost() {
         const [people, setpeople] = useState([]);
+        const header = headers(); 
         useEffect(() => {
-                axios.get('http://localhost:3001/user/interviewer', headers).then((res) => {
+                if(header !== undefined) {
+                
+                axios.get('http://localhost:3001/user/interviewer', header).then((res) => {
                          if(res.statusText === 'OK') {
                                 setpeople(res.data.data); 
                          }
-                })
+                })}
         }, [])
         return (
                 <div>

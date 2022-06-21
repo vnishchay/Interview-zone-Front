@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import './selectProblems.css';
 import { useForm } from 'react-hook-form';
-import { headers } from '../config';
+import headers from '../config';
 const axios = require('axios');
 
 
@@ -10,10 +10,11 @@ const SelectProblemsPage = () => {
     const [questionList, setquestionList] = useState([]);
     const { register, handleSubmit } = useForm({});
     const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
-
+    const header = headers(); 
     const fetchquestions = async () => {
         try {
-            await axios.get(url + '/question/get', headers).then((res) => {
+            if(header)
+            await axios.get(url + '/question/get', header).then((res) => {
                 var data = res.data;
                 if (data) {
                     console.log(data)
