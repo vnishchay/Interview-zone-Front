@@ -17,70 +17,48 @@ const Activity = ()=>{
         <div> { data && 
             <div className="activity">
               <div>Interviews </div>
-                    <ul className="data-user">
+                    <ul className="grid">
                         {data.user.interviews && data.user.interviews.length > 0 ? data.user.interviews.map((interview, index)=>{
-                                 return <ProfileCard object={interview}></ProfileCard>
+                                 return <ProfileCard object={interview} type={2}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No Follow Requests </div>
                         }
                     </ul>
                     <div>Connections </div>
-                    <ul className="">
+                    <ul className="grid">
                         {data.user.connections && data.user.connections.length > 0 ?  data.user.connections.map((interview, index)=>{
-                                return <ProfileCard object={interview}></ProfileCard>
+                                return <ProfileCard object={interview} type={6}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No Connections </div>
                     }
                     </ul>
-                    <div> Follow Requests  </div>
-                    <ul className="">
-                        {data.user.pendingFollowers && data.user.pendingFollowers.length > 0  ? data.user.pendingFollowers.map((interview, index)=>{
-                                return <ProfileCard object={interview}></ProfileCard>
-                        })
-                        : <div className="activity-not-found"> No Follow Requests </div>
-                    }
-                    </ul>
-                    <div>Followers </div>
-                    <ul className="">
-                        {data.user.followers && data.user.followers.length > 0 ? data.user.followers.map((interview, index)=>{
-                               return <ProfileCard object={interview}></ProfileCard>
-                        })
-                        : <div className="activity-not-found"> No Followers </div>
-                        }
-                    </ul>
+                   
 
-                    <div>Following </div>
-                    <ul className="">
-                        {data.user.following && data.user.following.length > 0 ? data.user.following.map((interview, index)=>{
-                                 return <ProfileCard object={interview}></ProfileCard>
-                        })
-                        : <div className="activity-not-found"> No Following </div>
-                    }
-                    </ul>
+                   
 
                     <div> Sent Connection Requests </div>
-                    <ul className="">
+                    <ul className="grid">
                         {data.user.sentConnectionRequests && data.user.sentConnectionRequests >0 ? data.user.sentConnectionRequests.map((interview, index)=>{
                               
-                              return <ProfileCard object={interview}></ProfileCard>
+                              return <ProfileCard object={interview} type={2}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No Requests </div>
                         }
                     </ul>
 
                     <div> Connection Requests </div>
-                    <ul className="">
+                    <ul className="grid">
                         {data.user.connectionRequests  && data.user.connectionRequests.length >0 ?  data.user.connectionRequests.map((interview, index)=>{
-                                return <ProfileCard object={interview}></ProfileCard>
+                                return <ProfileCard object={interview} type={5}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No  Requests </div>
                       }
                     </ul>
                     
                     <div> Sent Requests </div>
-                    <ul className="">
+                    <ul className="grid">
                         {data.user.sentInterviewRequest && data.user.sentInterviewRequest.length > 0 ? data.user.sentInterviewRequest.map((interview, index)=>{
-                               return <ProfileCard object={interview}></ProfileCard>
+                               return <ProfileCard object={interview} type={4}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No  Requests </div>
                     }
@@ -88,9 +66,9 @@ const Activity = ()=>{
 
 
                     <div> Interview Requests </div>
-                    <ul className="">
+                    <ul className="grid">
                         {data.user.interviewRequest && data.user.interviewRequest.length > 0? data.user.interviewRequest.map((interview, index)=>{
-                                 return <ProfileCard object={interview}></ProfileCard>
+                                 return <ProfileCard object={interview} type={7}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No  Requests </div>
                         }

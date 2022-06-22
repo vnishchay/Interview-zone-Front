@@ -1,4 +1,5 @@
 .activity { 
+     background-color: white;
      min-height: 100vh;
      min-width: 100vw;
      max-height: max-content;
@@ -23,6 +24,7 @@
     background-color: rgb(232, 228, 228);
     color: gray;
     font-size: 25;
+    width: 100%;
     padding: 30px;
     align-items: center;
     justify-content: center;
@@ -43,3 +45,10 @@
   }
   
   
+  .grid {
+     width: 100%;
+     display: flex;
+     flex-direction: row;
+     flex-wrap: wrap;
+     justify-content: left;
+  }

@@ -53,6 +53,26 @@ export const sendconnectionRequest = (username)=>{
         })
     }
 }
+ 
+
+export const acceptConnection = async(id)=>{
+    const header = headers(); 
+    axios.post('http://localhost:3001/user/acceptConnection', {id : id}, header).then((res)=> {
+              console.log(res) 
+    })
+}
+
+export const acceptInterview = async(id)=>{
+    const header = headers(); 
+    axios.post('http://localhost:3001/user/acceptInterview', {id : id}, header).then((res)=> {
+              console.log(res) 
+    })
+}
+
+
+
+
+
 
 
 

@@ -4,8 +4,7 @@ import { useParams } from 'react-router-dom';
 import headers from '../config';
 import "./profilepage.css"
 import { sendFollowRequest, sentInterviewRequest, sendconnectionRequest } from '../home/Home';
-import ProfileCard from '../userCards/profileCards';
-
+import { acceptConnection } from '../home/Home';
 
 export default function ProfilePage() {
     const { id } = useParams(); 
@@ -34,11 +33,7 @@ export default function ProfilePage() {
     } 
     },[])
 
-    const acceptConnection = async(id)=>{
-        axios.post('http://localhost:3001/user/acceptConnection', {id : id}, header).then((res)=> {
-                  console.log(res) 
-        })
-}
+ 
 
     const toggleRole = ()=>{
           setrole((pre)=> !pre); 
