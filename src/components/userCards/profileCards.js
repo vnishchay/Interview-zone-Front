@@ -1,14 +1,14 @@
 import axios from "axios";
+import e from "cors";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import headers from "../config";
 import "./profileCards.css"
-import { acceptInterview, deleteConnectionRequest, sendconnectionRequest, sentInterviewRequest } from "../home/Home";
-import { acceptConnection } from "../home/Home";
  
 export const CustomButton = ({id, type})=>{
     const [loading , setloading] = useState(false); 
     const [isdone , setisdone] = useState(false); 
+    const header = headers(); 
 
  const sentInterviewRequest = ()=>{
     setloading((pre)=>true)
@@ -54,6 +54,7 @@ export const CustomButton = ({id, type})=>{
      })
  }
 }
+
 
 
 const acceptConnection = async()=>{
@@ -110,11 +111,11 @@ const acceptInterview = async()=>{
              {type===1 &&  <button className="btn-0" onClick={sentInterviewRequest} >{ !loading ? <>Interview Request </> : <>...</>}</button>}
              {type==2 &&  <button className="btn-0" onClick={acceptConnection} >{ !loading ? <> Accept Connection Request </> : <>...</>}</button>}
              {type ==3 &&  <button className="btn-0" onClick={sendconnectionRequest} >{ !loading ? <> Connect </> : <>...</>}</button>}
-             {type ==4  &&  <button className="btn-0" onClick={acceptInterview} >{ !loading ? <> Delete Interview Request </> : <>...</>}</button>}
+             {type ==4  &&  <button className="btn-0" onClick={acceptInterview} >{ !loading ? <> Accept Interview Request </> : <>...</>}</button>}
              {type ==5  &&  <button className="btn-0" onClick={deleteConnectionRequest} >{ !loading ? <> Delete Connection Request </> : <>...</>}</button>}
              {type ==6  &&  <button className="btn-0" onClick={()=>console.log("TO be implemented")} >Remove Connection</button>}
              {type==7 &&  <button className="btn-0" onClick={()=>console.log("TO be implemented")} >Accept Interview Request</button>}
-             {type==8 &&  <button className="btn-0" onClick={()=>console.log("TO be implemented")}>Delete</button>} 
+             {type==8 &&  <button className="btn-0" onClick={()=>console.log("TO be implemented")}>Proceed</button>} 
              </>
              } 
              </>
@@ -123,13 +124,16 @@ const acceptInterview = async()=>{
 }
 
 const ProfileCard = ({ object, type }) => {
+
     const header = headers();
     const [data, setdata] = useState();
+    console.log(object)
     useEffect(() => {
         if (header !== undefined) {
-            axios.post('http://localhost:3001/user/getUserById', { id: object }, header).then(res => {
+            axios.post('http://localhost:3001/user/getUserById', { id : object }, header).then(res => {
                 console.log(res)
                 if (res.statusText === 'OK') {
+                    
                     setdata(res.data.data)
                 }
             })
@@ -141,10 +145,10 @@ const ProfileCard = ({ object, type }) => {
                 <div >
                     <div className="card">
                         <div>
-                            <Link to={`/profile/${data.id}`}>
+                            <Link to={`/profile/${data.username}`}>
                                 <div className="profileImage"></div>
                                 <div className="nameFamily">
-                                    <p>{data.id}</p>
+                                    <p>{data.username}</p>
                                     <span>FrontEnd Developer</span>
                                 </div>
                             </Link>
@@ -160,3 +164,38 @@ const ProfileCard = ({ object, type }) => {
 export default ProfileCard; 
 
 
+
+
+
+export const InterviewCard = ({id, type })=>{
+       console.log(id); 
+       const header = headers(); 
+       const [interview , setinterview] = useState(); 
+       useEffect(()=>{
+              
+              axios.post('http://localhost:3001/interview/findById', {id : id} , header).then((res )=>{
+                      if(res.statusText === 'OK') {
+                          console.log(res.data)
+                          setinterview(res.data.data) 
+                      }
+              })
+       }, [])
+       return  (
+        <div className="card">{
+            interview && 
+        <div>
+            <Link to={`/setup/${interview.interviewID}`}>
+
+                <div className="nameFamily">
+                    <div>{interview.level}</div>
+                    <div>host : {interview.hostname}</div>
+                    <div>candidate : {interview.candidatename}</div>
+                    <div>level : {interview.levelOfQuestions}</div>
+                </div>
+            </Link>
+            <CustomButton id={interview._id} type={type}></CustomButton>
+        </div>
+}   
+    </div>
+       )
+}

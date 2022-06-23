@@ -54,10 +54,10 @@ export default function ProfilePage() {
                     <div className="img-user-profile">
                         <img className="avatar" src="http://gravatar.com/avatar/288ce55a011c709f4e17aef7e3c86c64?s=200" alt="jofpin" />
                     </div>
-                    <CustomButton type={5}></CustomButton>
-                    <CustomButton type={4}></CustomButton>
-                    <CustomButton type={1}></CustomButton>
-                 
+                    <CustomButton id={data.user.id}  type={1}></CustomButton>
+                    <CustomButton id={data.user.id} type={3}></CustomButton>
+                    {/* <CustomButton id={data.user.id} type={1}></CustomButton> */}
+                    
                    <span> Role :  { role ?  <h3>Interviewer</h3> : <h3>Candidate</h3>} </span>
                     <button onClick={toggleRole}>Change role ? </button>
                     <div className="description-profile">{data.description}<a href="https://twitter.com/codernishchay" title="bullgit"><strong>@bullgit</strong></a> | I love to create small things for the internet!</div>

@@ -39,7 +39,7 @@ export default function FindHost() {
                                 <div className="boxBody">
                                         {people && people.map((user, index) => {
                                                 return (
-                                                    <ProfileCard object={user._id} type={2}></ProfileCard>     
+                                                    <ProfileCard object={user._id} type={3}></ProfileCard>     
                                                 )
                                         })}
                                 </div>

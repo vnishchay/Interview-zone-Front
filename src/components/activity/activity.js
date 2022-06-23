@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import headers from "../config";
-import ProfileCard from "../userCards/profileCards"
+import ProfileCard, { InterviewCard } from "../userCards/profileCards"
 import './activity.css'
 const Activity = ()=>{
       const [data,setdata ] = useState(); 
@@ -19,7 +19,7 @@ const Activity = ()=>{
                 <div>Interviews </div>
                     <ul className="grid">
                         {data.user.interviews && data.user.interviews.length > 0 ? data.user.interviews.map((interview, index)=>{
-                                 return <ProfileCard object={interview} type={2}></ProfileCard>
+                                 return <InterviewCard id={interview} type={8}></InterviewCard>
                         })
                         : <div className="activity-not-found"> No Follow Requests </div>
                         }
@@ -67,7 +67,7 @@ const Activity = ()=>{
                     <div>Incoming Interview Requests </div>
                     <ul className="grid">
                         {data.user.interviewRequest && data.user.interviewRequest.length > 0? data.user.interviewRequest.map((interview, index)=>{
-                                 return <ProfileCard object={interview} type={7}></ProfileCard>
+                                 return <ProfileCard object={interview} type={4}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No  Requests </div>
                         }
