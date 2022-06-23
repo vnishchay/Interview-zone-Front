@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import headers from '../config';
 import "./profilepage.css"
-import { sendFollowRequest, sentInterviewRequest, sendconnectionRequest } from '../home/Home';
-import { acceptConnection } from '../home/Home';
+import { CustomButton } from '../userCards/profileCards';
 
 export default function ProfilePage() {
     const { id } = useParams(); 
@@ -55,17 +54,10 @@ export default function ProfilePage() {
                     <div className="img-user-profile">
                         <img className="avatar" src="http://gravatar.com/avatar/288ce55a011c709f4e17aef7e3c86c64?s=200" alt="jofpin" />
                     </div>
-                   
-                    <div className="user-profile-data">
-                        <h1>{data.user.username}</h1>
-                        <h3>{data.user.email}</h3>
-                        <p>{data.github}</p>
-                        <p>{data.user.country}</p>
-                    <button onClick={()=> sendFollowRequest(data.user.username)}> Follow </button>
-                    <button onClick={()=> sentInterviewRequest(data.user.username)}> Interview Request </button>
-                    <button onClick={()=> sendconnectionRequest(data.user.username)}> Connect </button>
-                    <button onClick={()=> acceptConnection(data.user._id)}> Accept Connection</button>
-                    </div> 
+                    <CustomButton type={5}></CustomButton>
+                    <CustomButton type={4}></CustomButton>
+                    <CustomButton type={1}></CustomButton>
+                 
                    <span> Role :  { role ?  <h3>Interviewer</h3> : <h3>Candidate</h3>} </span>
                     <button onClick={toggleRole}>Change role ? </button>
                     <div className="description-profile">{data.description}<a href="https://twitter.com/codernishchay" title="bullgit"><strong>@bullgit</strong></a> | I love to create small things for the internet!</div>

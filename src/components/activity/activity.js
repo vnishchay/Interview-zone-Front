@@ -16,7 +16,7 @@ const Activity = ()=>{
       return (
         <div> { data && 
             <div className="activity">
-              <div>Interviews </div>
+                <div>Interviews </div>
                     <ul className="grid">
                         {data.user.interviews && data.user.interviews.length > 0 ? data.user.interviews.map((interview, index)=>{
                                  return <ProfileCard object={interview} type={2}></ProfileCard>
@@ -38,15 +38,14 @@ const Activity = ()=>{
 
                     <div> Sent Connection Requests </div>
                     <ul className="grid">
-                        {data.user.sentConnectionRequests && data.user.sentConnectionRequests >0 ? data.user.sentConnectionRequests.map((interview, index)=>{
-                              
-                              return <ProfileCard object={interview} type={2}></ProfileCard>
+                        {data.user.sentConnectionRequest && data.user.sentConnectionRequest.length >0 ?  data.user.sentConnectionRequest.map((interview, index)=>{
+                              return <ProfileCard object={interview} type={8}></ProfileCard>
                         })
                         : <div className="activity-not-found"> No Requests </div>
                         }
                     </ul>
 
-                    <div> Connection Requests </div>
+                    <div>Incoming Connection Requests </div>
                     <ul className="grid">
                         {data.user.connectionRequests  && data.user.connectionRequests.length >0 ?  data.user.connectionRequests.map((interview, index)=>{
                                 return <ProfileCard object={interview} type={5}></ProfileCard>
@@ -55,7 +54,7 @@ const Activity = ()=>{
                       }
                     </ul>
                     
-                    <div> Sent Requests </div>
+                    <div> Sent Interview Requests </div>
                     <ul className="grid">
                         {data.user.sentInterviewRequest && data.user.sentInterviewRequest.length > 0 ? data.user.sentInterviewRequest.map((interview, index)=>{
                                return <ProfileCard object={interview} type={4}></ProfileCard>
@@ -65,7 +64,7 @@ const Activity = ()=>{
                     </ul>
 
 
-                    <div> Interview Requests </div>
+                    <div>Incoming Interview Requests </div>
                     <ul className="grid">
                         {data.user.interviewRequest && data.user.interviewRequest.length > 0? data.user.interviewRequest.map((interview, index)=>{
                                  return <ProfileCard object={interview} type={7}></ProfileCard>

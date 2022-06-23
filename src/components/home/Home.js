@@ -11,64 +11,6 @@ import axios from "axios";
 import headers from "../config";
 
 
-export const sentInterviewRequest = (username, setstatus )=>{
-       console.log("sent interviwew request")
-       const header = headers(); 
-       if(header !== undefined) {
-           axios.post('http://localhost:3001/user/interviewRequest', {username : username}, header).then((res)=>{
-                  console.log(res)
-                  if(res.statusText === 'OK'){
-                         if(res.data.isConnection == false ) {
-                                 setstatus(1);  
-                         }else {
-                             setstatus(2); 
-                         }
-                  }else {
-                       setstatus(0); 
-                  }
-           })
-       }
-}
-
-export const sendFollowRequest = (username)=>{
-    const header = headers(); 
-    if(header !== undefined) {
-        axios.post('http://localhost:3001/user/followrequest', {username : username}, header).then((res)=>{
-               console.log(res)
-               if(res.statusText === 'OK'){
-                     console.log("Sent Interview Request")
-               }
-        })
-    }
-}
-
-export const sendconnectionRequest = (username)=>{
-    const header = headers(); 
-    if(header !== undefined) {
-        axios.post('http://localhost:3001/user/connectionrequest', {username : username}, header).then((res)=>{
-               console.log(res)
-               if(res.statusText === 'OK'){
-                     console.log("Sent Interview Request")
-               }
-        })
-    }
-}
- 
-
-export const acceptConnection = async(id)=>{
-    const header = headers(); 
-    axios.post('http://localhost:3001/user/acceptConnection', {id : id}, header).then((res)=> {
-              console.log(res) 
-    })
-}
-
-export const acceptInterview = async(id)=>{
-    const header = headers(); 
-    axios.post('http://localhost:3001/user/acceptInterview', {id : id}, header).then((res)=> {
-              console.log(res) 
-    })
-}
-
 
 
 
