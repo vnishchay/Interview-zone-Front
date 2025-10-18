@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=14"
+    "node": ">=14 <=18"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
@@ -42,10 +42,10 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
-    "test": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && npx --yes react-scripts start",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && npx --yes react-scripts build",
+    "test": "export NODE_OPTIONS=--openssl-legacy-provider && npx --yes react-scripts test --env=jsdom",
+    "eject": "npx --yes react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
