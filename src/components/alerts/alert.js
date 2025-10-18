@@ -1,34 +1,37 @@
-import React, { Fragment } from "react";
-import { useAlert } from "react-alert";
+import React from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Home = () => {
-    const alert = useAlert();
+  return (
+    <div>
+      <button
+        onClick={() => {
+          toast.info("Oh look, an alert!");
+        }}
+      >
+        Show Alert
+      </button>
 
-    return (
-        <Fragment>
-            <button
-                onClick={() => {
-                    alert.show("Oh look, an alert!");
-                }}
-            >
-                Show Alert
-            </button>
-            <button
-                onClick={() => {
-                    alert.error("You just broke something!");
-                }}
-            >
-                Oops, an error
-            </button>
-            <button
-                onClick={() => {
-                    alert.success("It's ok now!");
-                }}
-            >
-                Success!
-            </button>
-        </Fragment>
-    );
+      <button
+        onClick={() => {
+          toast.error("You just broke something!");
+        }}
+      >
+        Oops, an error
+      </button>
+
+      <button
+        onClick={() => {
+          toast.success("It's ok now!");
+        }}
+      >
+        Success!
+      </button>
+
+      <ToastContainer position="top-right" autoClose={5000} />
+    </div>
+  );
 };
 
 export default Home;
