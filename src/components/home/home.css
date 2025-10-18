@@ -6,11 +6,11 @@
   flex: 1.2;
 }
 .header {
-    height: 70px;
-    background-color: #261f60;
-    top: 0%;
-    width: 100%;
-    position: absolute;
+  height: 70px;
+  background-color: #261f60;
+  top: 0%;
+  width: 100%;
+  position: absolute;
 }
 
 .card {
@@ -154,53 +154,78 @@ code {
 .inputWithButton {
   background-color: #fff;
   display: flex;
-  border: 1px solid #b5b5b5;
-  border-radius: 5px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
   align-items: center;
   overflow: hidden;
-  width: 500px;
+  max-width: 500px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
 }
+
+.inputWithButton:focus-within {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
 .inputWithButton .searchInpt {
   height: 100%;
   width: 100%;
-  min-height: 60px;
+  min-height: 56px;
   border: none;
-  padding: 0 50px 0 20px;
-  color: #6a6a6a;
-  font-size: 16px;
+  padding: 0 20px;
+  color: #1f2937;
+  font-size: 15px;
   line-height: 20px;
   font-weight: 400;
+  background: transparent;
 }
+
 .inputWithButton .searchInpt:focus {
   outline: none;
 }
+
+.inputWithButton .searchInpt::placeholder {
+  color: #9ca3af;
+}
+
 .inputWithButton .btnSearch {
-  margin: 10px;
+  margin: 8px;
   border: none;
-  padding: 10px 15px;
+  padding: 12px 20px;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 8px;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   line-height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
+  transition: all 0.3s ease;
 }
+
 .inputWithButton .btnSearch.btnOrange {
-  background: #fd942b;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
 }
+
 .inputWithButton .btnSearch.btnAqua {
-  background: #0de8a6;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
+
+.inputWithButton .btnSearch:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
 .inputWithButton .btnSearch .icon {
-  margin-left: 10px;
+  margin-left: 8px;
   display: inline-flex;
 }
+
 .inputWithButton .item:first-child {
   flex-grow: 1;
 }
-
 
 * {
   box-sizing: border-box;
@@ -208,14 +233,22 @@ code {
 
 body {
   margin: 0px;
-  font-family: 'segoe ui';
+  font-family: "segoe ui";
 }
 
+/* Modern Navbar Styles */
 .nav {
-  height: 50px;
+  height: 70px;
   width: 100%;
-  background-color: #4d4d4d;
-  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .nav > .nav-header {
@@ -224,9 +257,11 @@ body {
 
 .nav > .nav-header > .nav-title {
   display: inline-block;
-  font-size: 22px;
+  font-size: 24px;
   color: #fff;
-  padding: 10px 10px 10px 10px;
+  padding: 20px 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .nav > .nav-btn {
@@ -236,66 +271,160 @@ body {
 .nav > .nav-links {
   display: inline;
   float: right;
-  font-size: 18px;
+  font-size: 16px;
+  padding-right: 20px;
 }
 
-.nav > .nav-links > a {
+.nav > .nav-links > a,
+.nav > .nav-links > button {
   display: inline-block;
-  padding: 13px 10px 13px 10px;
+  padding: 24px 18px;
   text-decoration: none;
-  color: #efefef;
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: inherit;
+  position: relative;
 }
 
-.nav > .nav-links > a:hover {
-  background-color: rgba(0, 0, 0, 0.3);
+.nav > .nav-links > a::after {
+  content: "";
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  background: white;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.nav > .nav-links > a:hover::after {
+  transform: scaleX(1);
+}
+
+.nav > .nav-links > a:hover,
+.nav > .nav-links > button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.nav > .nav-links > button {
+  margin: 10px 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+}
+
+.nav > .nav-links > button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .nav > #nav-check {
   display: none;
 }
 
-@media (max-width:600px) {
+@media (max-width: 768px) {
   .nav > .nav-btn {
     display: inline-block;
     position: absolute;
     right: 0px;
     top: 0px;
   }
+
   .nav > .nav-btn > label {
     display: inline-block;
-    width: 50px;
-    height: 50px;
-    padding: 13px;
+    width: 60px;
+    height: 70px;
+    padding: 23px;
+    cursor: pointer;
   }
-  .nav > .nav-btn > label:hover,.nav  #nav-check:checked ~ .nav-btn > label {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
+
   .nav > .nav-btn > label > span {
     display: block;
     width: 25px;
-    height: 10px;
-    border-top: 2px solid #eee;
+    height: 3px;
+    border-radius: 2px;
+    background-color: #fff;
+    transition: all 0.3s ease;
   }
+
+  .nav > .nav-btn > label > span:nth-child(2) {
+    margin-top: 5px;
+  }
+
+  .nav > .nav-btn > label > span:nth-child(3) {
+    margin-top: 5px;
+  }
+
+  .nav > .nav-btn > label:not(.active):hover > span {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .nav > #nav-check:checked ~ .nav-btn > label > span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .nav > #nav-check:checked ~ .nav-btn > label > span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav > #nav-check:checked ~ .nav-btn > label > span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
   .nav > .nav-links {
     position: absolute;
     display: block;
     width: 100%;
-    background-color: #333;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     height: 0px;
     transition: all 0.3s ease-in;
     overflow-y: hidden;
-    top: 50px;
+    top: 70px;
     left: 0px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .nav > .nav-links > a {
+
+  .nav > .nav-links > a,
+  .nav > .nav-links > button {
     display: block;
     width: 100%;
+    text-align: center;
+    padding: 18px 0;
   }
+
+  .nav > .nav-links > a::after {
+    display: none;
+  }
+
+  .nav > .nav-links > button {
+    margin: 12px auto;
+    width: calc(100% - 40px);
+    max-width: 300px;
+  }
+
   .nav > #nav-check:not(:checked) ~ .nav-links {
     height: 0px;
   }
+
   .nav > #nav-check:checked ~ .nav-links {
-    height: calc(100vh - 50px);
+    height: auto;
     overflow-y: auto;
+    padding-bottom: 20px;
   }
 }
