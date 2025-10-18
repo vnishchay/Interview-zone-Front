@@ -2,12 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
 import sock from "../socket";
 import "./video.css";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 export default function Video({
   hostName,
   candidateName,
   currentUserName,
+  authUserName,
+  authUserId,
+  hostId,
+  participantId,
   logger,
 }) {
   const { id: videoID } = useParams();
@@ -21,8 +25,30 @@ export default function Video({
   const [isConnected, setIsConnected] = useState(false);
   const [remotePeerName, setRemotePeerName] = useState("");
 
-  const myName = currentUserName || hostName;
-  const otherUserName = currentUserName === hostName ? candidateName : hostName;
+  // Label for local video: show 'You' plus name if available
+  const displayMyName = authUserName || currentUserName || "You";
+  const myName = `${displayMyName} (You)`;
+
+  // Determine other user's label safely:
+  // 1) Prefer the socket-provided remotePeerName (most accurate)
+  // 2) If not available, deduce using IDs: if authUserId equals hostId then other is candidateName, else hostName
+  // 3) Fall back to host/candidate names
+  // 4) Fallback generic label
+  let otherUserName = "Other";
+  if (remotePeerName) {
+    otherUserName = remotePeerName;
+  } else if (authUserId && hostId && String(authUserId) === String(hostId)) {
+    otherUserName = candidateName || "Candidate";
+  } else if (
+    authUserId &&
+    participantId &&
+    String(authUserId) === String(participantId)
+  ) {
+    otherUserName = hostName || "Host";
+  } else if (hostName || candidateName) {
+    // if we can't tell by id, prefer showing the hostname for the other pane
+    otherUserName = hostName || candidateName || "Other";
+  }
 
   function toggleVideo() {
     if (streamRef.current && streamRef.current.getVideoTracks().length > 0) {
@@ -291,32 +317,6 @@ export default function Video({
 
   return (
     <div className="video-container-wrapper">
-      <div className="video-controls">
-        <div className="control-buttons">
-          <button
-            className={`control-btn ${!isvideo ? "disabled" : ""}`}
-            onClick={toggleVideo}
-            title={isvideo ? "Turn off camera" : "Turn on camera"}
-          >
-            {isvideo ? "📹" : "🚫📹"}
-          </button>
-          <button
-            className={`control-btn ${!isaudio ? "disabled" : ""}`}
-            onClick={toggleMic}
-            title={isaudio ? "Mute microphone" : "Unmute microphone"}
-          >
-            {isaudio ? "🎤" : "🔇"}
-          </button>
-        </div>
-
-        {isConnected && (
-          <div className="connection-status">
-            <span className="status-dot"></span>
-            <span>Connected</span>
-          </div>
-        )}
-      </div>
-
       <div className="videos-grid">
         <div className="video-wrapper my-video-wrapper">
           <video
@@ -326,9 +326,32 @@ export default function Video({
             ref={myVideo}
             autoPlay
           />
-          <div className="video-label">
-            <span className="username-badge">{myName} (You)</span>
+          {/* Overlay controls on user's video */}
+          <div className="video-controls-overlay">
+            <button
+              className={`control-btn ${!isvideo ? "disabled" : ""}`}
+              onClick={toggleVideo}
+              title={isvideo ? "Turn off camera" : "Turn on camera"}
+            >
+              {isvideo ? "📹" : "🚫📹"}
+            </button>
+            <button
+              className={`control-btn ${!isaudio ? "disabled" : ""}`}
+              onClick={toggleMic}
+              title={isaudio ? "Mute microphone" : "Unmute microphone"}
+            >
+              {isaudio ? "🎤" : "🔇"}
+            </button>
           </div>
+          <div className="video-label">
+            <span className="username-badge">{myName}</span>
+          </div>
+          {isConnected && (
+            <div className="connection-status-overlay">
+              <span className="status-dot"></span>
+              <span>Connected</span>
+            </div>
+          )}
         </div>
 
         <div className="video-wrapper peer-video-wrapper">
@@ -345,7 +368,11 @@ export default function Video({
           </div>
           {!isConnected && (
             <div className="waiting-overlay">
-              <p>Waiting for {otherUserName} to join...</p>
+              <p>
+                {remotePeerName
+                  ? `Waiting for ${remotePeerName} to join...`
+                  : `Waiting for other participant to join...`}
+              </p>
             </div>
           )}
         </div>

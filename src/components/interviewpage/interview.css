@@ -47,6 +47,121 @@
   overflow: hidden;
 }
 
+/* Control Panel - Host Only */
+.control-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.15) 0%,
+    rgba(118, 75, 162, 0.15) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+  padding: 12px 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 100;
+}
+
+.panel-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(102, 126, 234, 0.5);
+  color: white;
+}
+
+.panel-toggle.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Host settings (gear + dropdown) */
+.host-settings {
+  margin-left: auto;
+  position: relative;
+}
+
+.settings-btn {
+  background: transparent;
+  border: none;
+  color: #cfe3ff;
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.settings-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background: #0b0f1a;
+  border: 1px solid rgba(102, 126, 234, 0.12);
+  padding: 12px;
+  border-radius: 8px;
+  min-width: 220px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  z-index: 200;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 6px;
+}
+
+.settings-item label {
+  color: #dfe8ff;
+  font-size: 14px;
+}
+
+.toggle-switch {
+  width: 42px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.toggle-on {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.toggle-on .toggle-knob {
+  left: 20px;
+}
+
 .interview-header {
   background: linear-gradient(
     135deg,
@@ -118,17 +233,38 @@
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
+/* Floating host settings removed (settings available in top control panel only) */
+
 .container {
   flex: 1;
   display: grid;
   grid-template-columns: 1.8fr 1.6fr;
-  grid-template-rows: 1fr 0.5fr;
+  grid-template-rows: 0.6fr 1.2fr;
   gap: 0;
   grid-template-areas:
     "editor video"
     "editor questions";
-  height: calc(100vh - 80px);
+  height: calc(100vh - 60px);
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Video-only mode (Google Meet style default) */
+.container.video-only {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "video";
+}
+
+.container.video-only .VideoCall {
+  grid-area: video;
+  width: 100vw;
+  height: 100vh;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .TextArea {
@@ -150,7 +286,28 @@
   overflow-y: auto;
   background: #0d0d35;
   border-top: 1px solid rgba(102, 126, 234, 0.2);
-  padding: 15px;
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Enhance question card visibility */
+.Questions ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.Questions ::-webkit-scrollbar-track {
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 4px;
+}
+
+.Questions ::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.4);
+  border-radius: 4px;
+}
+
+.Questions ::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.6);
 }
 
 .VideoCall {
@@ -159,6 +316,31 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* When a non-host (candidate) should see a larger video area while editor is visible
+   but questions are hidden, expand the VideoCall to take the right column space as well. */
+.container.video-expand-right .VideoCall {
+  grid-area: video / video / questions / video;
+  /* grid-area: row-start / column-start / row-end / column-end */
+  width: 100%;
+  height: 100%;
+}
+
+/* Ensure the VideoCall fills the container and the videos-grid stretches to full height */
+.container.video-expand-right {
+  height: calc(100vh - 60px);
+}
+.container.video-expand-right .VideoCall {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.container.video-expand-right .VideoCall .videos-grid {
+  height: 100%;
+}
+.container.video-expand-right .VideoCall .videos-grid .video-wrapper {
+  height: 100%;
 }
 
 /* Responsive Design */
