@@ -3,113 +3,203 @@
   box-sizing: border-box;
 }
 
-.container {
+/* Loading Screen */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white;
+}
+
+.loader {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-screen p {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Interview Header */
+.interview-container {
   width: 100%;
-  border-radius: 1px;
-  /* background: #141616;
-  
-  
-  */
-
-  border-radius: 5px;
+  height: 100vh;
   background: #050527;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-  margin: 0;
-  padding: 0;
-  /* height: 100vh; */
+.interview-header {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.2) 0%,
+    rgba(118, 75, 162, 0.2) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.interview-info h2 {
+  color: white;
+  font-size: 20px;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.participants-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.participant {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.role-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.username {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(102, 126, 234, 0.3);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.separator {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+}
+
+.current-role {
+  margin-left: 8px;
+}
+
+.role-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.container {
+  flex: 1;
   display: grid;
   grid-template-columns: 1.8fr 1.6fr;
-  grid-template-rows: 0.2fr 0.8fr;
-  gap: 0px 0px;
-  grid-auto-flow: row;
-  border-radius: 0;
+  grid-template-rows: 1fr 0.5fr;
+  gap: 0;
+  grid-template-areas:
+    "editor video"
+    "editor questions";
+  height: calc(100vh - 80px);
+  overflow: hidden;
 }
 
 .TextArea {
-  grid-area: 1 / 1 / 4 / 2;
+  grid-area: editor;
   padding: 1em;
-}
-
-.Tools {
-  grid-area: 1 / 1 / 2 / 2;
+  overflow: auto;
+  background: #0a0a2e;
+  border-right: 1px solid rgba(102, 126, 234, 0.2);
 }
 
 .buttons {
-  height: 4em;
   display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  max-height: max-content;
-  text-align: center;
-  justify-content: center;
-}
-
-.Video-Call {
-  /* height: 100vh; */
-  background: black;
-  grid-area: 2 / 2 / 3 / 4;
+  align-items: center;
+  gap: 10px;
 }
 
 .Questions {
-  height: auto;
-  /* background: blue; */
-  grid-area: 3 / 2 / 4 / 3;
+  grid-area: questions;
+  overflow-y: auto;
+  background: #0d0d35;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+  padding: 15px;
 }
 
 .VideoCall {
-  /* width: 40em; */
-  /* padding: 1em; */
-  height: 13em;
-  /* height: 1em; */
-  border-radius: 5px;
-  background: #c7d6db;
-  box-shadow: inset -5px -5px 10px #6d7678, inset 5px 5px 10px #ffffff;
-
-  grid-area: 2 / 2 / 3 / 4;
+  grid-area: video;
+  background: #0a0a2e;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-/* .call-buttons {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  gap: 0px 0px;
-  grid-auto-flow: row;
-  grid-template-areas:
-    "b11"
-    "b12"
-    "b13";
-  grid-area: 2 / 3 / 3 / 4;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 0.6fr 0.4fr;
+    grid-template-areas:
+      "editor"
+      "video"
+      "questions";
+  }
+
+  .TextArea {
+    border-right: none;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+  }
 }
 
-.b11 {
-  grid-area: b11;
+@media (max-width: 768px) {
+  .interview-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 15px;
+  }
+
+  .interview-info h2 {
+    font-size: 18px;
+  }
+
+  .participants-info {
+    gap: 8px;
+  }
+
+  .username {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+
+  .role-badge {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
 }
-
-.b12 {
-  grid-area: b12;
-}
-
-.b13 {
-  grid-area: b13;
-} */
-
-.Questionsfull {
-  grid-area: 2 / 2 / 4 / 3;
-}
-
-/* .messages {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  gap: 0px 0px;
-  grid-auto-flow: row;
-  grid-template-areas:
-    ". Final-Messages Final-Messages"
-    ". Final-Messages Final-Messages"
-    ". Final-Messages Final-Messages";
-  grid-area: 3 / 2 / 4 / 4;
-} */
-/* 
-.Final-Messages {
-  grid-area: Final-Messages;
-} */

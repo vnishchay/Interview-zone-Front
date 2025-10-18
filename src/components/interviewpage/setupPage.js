@@ -1,88 +1,159 @@
-import React from 'react'
-import { useState, useEffect, useRef } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom';
-import "./setuppage.css"
+import React from "react";
+import { useState, useEffect, useRef } from "react";
+import { useParams, useHistory } from "react-router-dom";
+import "./setuppage.css";
 
 export default function SetupPage() {
-    const videoRef = useRef(null);
-    const { id } = useParams();
-    console.log(id)
-    const [isaudio, setisaudio] = useState(true);
-    const [isvideo, setisvideo] = useState(true)
-    const [stream, setstream] = useState()
-    const location = useLocation(); 
-    // const [constraints, setconstraints] = useState({ audio: isaudio, video: isvideo })
-    const [isstarted, setisstarted] = useState(false)
+  const videoRef = useRef(null);
+  const { id } = useParams();
+  const history = useHistory();
+  const [isaudio, setisaudio] = useState(true);
+  const [isvideo, setisvideo] = useState(true);
+  const [stream, setstream] = useState(null);
+
+  console.log("[SETUP PAGE] Interview ID:", id);
+
+  useEffect(() => {
+    let mounted = true;
+
     const getVideo = async () => {
-        setisstarted(true);
-        await navigator.mediaDevices
-            .getUserMedia({ video: isvideo, audio: isaudio })
-            .then(stream => {
-                let video = videoRef.current;
-                video.srcObject = stream;
-                setstream(stream);
-                video.play();
-            })
-            .catch(err => {
-                console.error("error:", err);
-            });
+      try {
+        const mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+
+        if (mounted && videoRef.current) {
+          videoRef.current.srcObject = mediaStream;
+          setstream(mediaStream);
+          console.log("[SETUP PAGE] Media stream initialized");
+        }
+      } catch (err) {
+        console.error("[SETUP PAGE] Media error:", err);
+        alert(`Cannot access camera/microphone: ${err.message}`);
+      }
     };
 
-    useEffect(() => {
-        getVideo();
-    }, [videoRef])
+    getVideo();
 
+    return () => {
+      mounted = false;
+      // Stream cleanup is handled in separate useEffect
+    };
+  }, []);
 
-    useEffect(() => {
-        if (isstarted) {
-            stream.getAudioTracks().forEach(element => element.enabled = !element.enabled);
-        }
-    }, [isaudio, videoRef])
-    useEffect(() => {
-        if (isstarted) {
-            stream.getVideoTracks().forEach(element => element.enabled = !element.enabled)
-        }
-    }, [isvideo, videoRef])
+  // Cleanup stream on unmount
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => {
+          track.stop();
+          console.log("[SETUP PAGE] Stopped track:", track.kind);
+        });
+      }
+    };
+  }, [stream]);
 
+  const handleToggleaudio = (e) => {
+    e.preventDefault();
+    const newAudioState = !isaudio;
+    setisaudio(newAudioState);
 
-
-    const handleToggleaudio = (e) => {
-        e.preventDefault();
-        setisaudio(!isaudio);
+    if (stream) {
+      stream.getAudioTracks().forEach((track) => {
+        track.enabled = newAudioState;
+      });
+      console.log("[SETUP PAGE] Audio toggled:", newAudioState);
     }
+  };
 
-    const handleTogglevideo = (e) => {
-        e.preventDefault();
-        setisvideo(!isvideo);
+  const handleTogglevideo = (e) => {
+    e.preventDefault();
+    const newVideoState = !isvideo;
+    setisvideo(newVideoState);
+
+    if (stream) {
+      stream.getVideoTracks().forEach((track) => {
+        track.enabled = newVideoState;
+      });
+      console.log("[SETUP PAGE] Video toggled:", newVideoState);
     }
+  };
 
+  return (
+    <div className="setuppage">
+      <div className="setup-container">
+        <div className="setup-header">
+          <h1>Ready to join?</h1>
+          <p>Check your audio and video before joining the interview</p>
+        </div>
 
-    return (
-        <div className='setuppage'>
-            <div className='component'>
-                <video className='local-video' ref={videoRef} />
-                <div className='col'>
-                    <div className='row'>
-                        {isvideo && <button className='slide setup-button row' onClick={handleTogglevideo}><img className='setup-button' src='/images/video.png'></img></button>}
-                        {!isvideo && <button className='slide setup-button row' onClick={handleTogglevideo}><img className='setup-button' src='/images/novideo.png'></img></button>}
-                        {isaudio && <button className='slide setup-button row' onClick={handleToggleaudio}><img className='setup-button' src='/images/microphone.png'></img></button>}
-                        {!isaudio && <button className='slide setup-button row' onClick={handleToggleaudio}><img className='setup-button' src='/images/mute.png'></img></button>}
-                    </div>
-                    <Link
-                        to={{
-                            pathname: `/interview/${id}`,
-                            state: { constraints: { 'video': isvideo, 'audio': isaudio } }
-                        }}
-                    >
-                        <button className='offset joinbutton'  > Join Now </button>
+        <div className="video-preview-container">
+          <div className="video-wrapper">
+            <video
+              className="local-video"
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+            />
+            {!isvideo && (
+              <div className="video-off-overlay">
+                <div className="video-off-icon">📹</div>
+                <p>Camera is off</p>
+              </div>
+            )}
 
-                        
-               
-                    </Link>
-
-                    <button className='offset' onClick={() => {navigator.clipboard.writeText(location.pathname)}}>Share Link</button>
-                </div>
+            <div className="video-controls-overlay">
+              <button
+                className={`control-btn ${!isvideo ? "disabled" : ""}`}
+                onClick={handleTogglevideo}
+                title={isvideo ? "Turn off camera" : "Turn on camera"}
+              >
+                {isvideo ? "📹" : "🚫"}
+              </button>
+              <button
+                className={`control-btn ${!isaudio ? "disabled" : ""}`}
+                onClick={handleToggleaudio}
+                title={isaudio ? "Mute microphone" : "Unmute microphone"}
+              >
+                {isaudio ? "🎤" : "🔇"}
+              </button>
             </div>
-        </div > 
-    )
+          </div>
+        </div>
+
+        <div className="setup-actions">
+          <button
+            className="share-link-btn"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              alert("Interview link copied to clipboard!");
+            }}
+          >
+            📋 Copy link
+          </button>
+
+          <button
+            className="join-button"
+            onClick={() => {
+              history.push({
+                pathname: `/interview/${id}`,
+                state: { constraints: { video: isvideo, audio: isaudio } },
+              });
+            }}
+          >
+            Join now
+          </button>
+        </div>
+
+        <div className="setup-info">
+          <p>
+            💡 <strong>Tip:</strong> Make sure your camera and microphone are
+            working properly
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }

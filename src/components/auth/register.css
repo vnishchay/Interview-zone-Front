@@ -6,7 +6,6 @@ body {
   color: #222;
 }
 
-.login-container,
 .register-container {
   min-height: 100vh;
   width: 100vw;
@@ -18,7 +17,6 @@ body {
   box-sizing: border-box;
 }
 
-.login-form,
 .register-form {
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
@@ -36,16 +34,15 @@ body {
   margin: 0 auto;
 }
 
-.login-form h1,
 .register-form h2 {
   margin-bottom: 0.5rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: 1px;
+  align-self: center;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.login-form label,
 .register-form label {
   width: 100%;
   display: flex;
@@ -56,7 +53,6 @@ body {
   margin-bottom: 0.7rem;
 }
 
-.login-form input,
 .register-form input {
   margin-top: 0.3rem;
   padding: 0.7rem 1rem;
@@ -70,14 +66,12 @@ body {
   width: 100%;
   box-sizing: border-box;
 }
-.login-form input:focus,
 .register-form input:focus {
   border: 1.5px solid #667eea;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.login-form button,
 .register-form button {
   margin-top: 0.5rem;
   width: 100%;
@@ -94,12 +88,10 @@ body {
   transition: all 0.3s;
   margin-bottom: 0.5rem;
 }
-.login-form button:disabled,
 .register-form button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
-.login-form button:hover:not(:disabled),
 .register-form button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
@@ -114,7 +106,6 @@ body {
   width: 100%;
 }
 
-.login-form a,
 .register-form a {
   color: #fff;
   text-decoration: none;
@@ -123,20 +114,66 @@ body {
   transition: all 0.2s;
   font-weight: 500;
 }
-.login-form a:hover,
 .register-form a:hover {
   color: rgba(255, 255, 255, 0.8);
   text-decoration: underline;
 }
 
+/* Username validation field */
+.username-field {
+  width: 100%;
+  position: relative;
+  margin-top: 0.3rem;
+}
+
+.username-field input {
+  margin-top: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.username-field.valid input {
+  border-color: #28a745;
+  background: rgba(212, 237, 218, 0.3);
+}
+
+.username-field.invalid input {
+  border-color: #dc3545;
+  background: rgba(248, 215, 218, 0.3);
+}
+
+.username-status {
+  display: block;
+  font-size: 0.88rem;
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+.username-field.valid .username-status {
+  color: #28a745;
+}
+
+.username-field.invalid .username-status {
+  color: #dc3545;
+}
+
+/* Success message styling */
+.register-form.success-message {
+  text-align: center;
+}
+
+.success-text {
+  color: #28a745;
+  font-size: 1.05rem;
+  margin: 1rem 0;
+}
+
 @media (max-width: 600px) {
-  .login-form,
   .register-form {
     min-width: unset;
     max-width: 98vw;
-    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    padding: 1.8rem 1.2rem 1.5rem 1.2rem;
   }
-  .login-container,
   .register-container {
     padding: 0 0.5rem;
   }
