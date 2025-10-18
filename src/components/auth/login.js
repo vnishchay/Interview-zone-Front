@@ -49,11 +49,17 @@ export const Login = () => {
       })
       .then((res) => {
         if ((res.status === 200 || res.status === 201) && res.data.token) {
+          // Ensure we always dispatch a user object with a username field
+          const userPayload =
+            res.data.user && typeof res.data.user === "object"
+              ? res.data.user
+              : { username: res.data.user || data.email };
+
           dispatch({
             type: "LOGIN",
             payload: {
               token: res.data.token,
-              user: res.data.user || data.email,
+              user: userPayload,
             },
           });
           history.push("/");

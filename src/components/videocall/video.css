@@ -149,6 +149,21 @@
   min-height: 0;
 }
 
+/* When the parent interview container requests a vertical stacked layout
+   (used for candidate view to give more vertical space), switch to a
+   single-column, two-row grid so videos appear one above the other. */
+.container.video-expand-right .VideoCall .videos-grid {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 15px;
+  height: 100%;
+}
+
+.container.video-expand-right .VideoCall .videos-grid .video-wrapper {
+  /* let each video take equal vertical space */
+  height: 100%;
+}
+
 .video-wrapper {
   position: relative;
   background: #000;

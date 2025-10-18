@@ -92,6 +92,76 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
+/* Host settings (gear + dropdown) */
+.host-settings {
+  margin-left: auto;
+  position: relative;
+}
+
+.settings-btn {
+  background: transparent;
+  border: none;
+  color: #cfe3ff;
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.settings-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background: #0b0f1a;
+  border: 1px solid rgba(102, 126, 234, 0.12);
+  padding: 12px;
+  border-radius: 8px;
+  min-width: 220px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  z-index: 200;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 6px;
+}
+
+.settings-item label {
+  color: #dfe8ff;
+  font-size: 14px;
+}
+
+.toggle-switch {
+  width: 42px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.toggle-on {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.toggle-on .toggle-knob {
+  left: 20px;
+}
+
 .interview-header {
   background: linear-gradient(
     135deg,
@@ -163,6 +233,8 @@
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
+/* Floating host settings removed (settings available in top control panel only) */
+
 .container {
   flex: 1;
   display: grid;
@@ -183,7 +255,6 @@
   grid-template-rows: 1fr;
   grid-template-areas: "video";
 }
-
 
 .container.video-only .VideoCall {
   grid-area: video;
@@ -245,6 +316,31 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* When a non-host (candidate) should see a larger video area while editor is visible
+   but questions are hidden, expand the VideoCall to take the right column space as well. */
+.container.video-expand-right .VideoCall {
+  grid-area: video / video / questions / video;
+  /* grid-area: row-start / column-start / row-end / column-end */
+  width: 100%;
+  height: 100%;
+}
+
+/* Ensure the VideoCall fills the container and the videos-grid stretches to full height */
+.container.video-expand-right {
+  height: calc(100vh - 60px);
+}
+.container.video-expand-right .VideoCall {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.container.video-expand-right .VideoCall .videos-grid {
+  height: 100%;
+}
+.container.video-expand-right .VideoCall .videos-grid .video-wrapper {
+  height: 100%;
 }
 
 /* Responsive Design */
