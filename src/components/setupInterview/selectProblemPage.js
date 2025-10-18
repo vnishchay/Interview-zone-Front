@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./selectProblems.css";
 import { useForm } from "react-hook-form";
-import headers, { API_BASE } from "../config";
+import { headers, API_BASE } from "../config";
 const axios = require("axios");
 
 const SelectProblemsPage = () => {

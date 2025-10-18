@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import Navbar from "./navbar";
 import Login from "../auth/login";
 import axios from "axios";
-import headers from "../config";
+import { headers } from "../config";
 
 export const create = (history) => {
   const header = headers();

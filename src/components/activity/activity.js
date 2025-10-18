@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import headers, { API_BASE } from "../config";
+import { headers, API_BASE } from "../config";
 import ProfileCard, { InterviewCard } from "../userCards/profileCards";
 import "./activity.css";
 

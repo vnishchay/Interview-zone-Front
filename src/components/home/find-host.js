@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import headers from "../config";
+import { headers } from "../config";
 import ProfileCard from "../userCards/profileCards";
 import Navbar from "./navbar";
 

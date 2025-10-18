@@ -1,8 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import headers from "../config";
-import { API_BASE } from "../config";
+import { headers, API_BASE } from "../config";
 import { useParams } from "react-router-dom";
 import "./addQuestion.css";
 

@@ -1,8 +1,7 @@
 import axios from "axios";
-import e from "cors";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import headers from "../config";
+import { headers, API_BASE } from "../config";
 import "./profileCards.css";
 
 export const CustomButton = ({ id, type }) => {
@@ -15,21 +14,21 @@ export const CustomButton = ({ id, type }) => {
     const header = headers();
     if (header !== undefined) {
       axios
-        .post("http://localhost:3001/user/interviewRequest", { id: id }, header)
+        .post(`${API_BASE}/user/interviewRequest`, { id: id }, header)
         .then((res) => {
           console.log(res);
-          if (res.statusText === "OK") {
-            if (res.data.isConnection == false) {
+          if (res.status === 200) {
+            if (res.data && res.data.isConnection === false) {
               alert("Make connection first");
-              setisdone((pre) => false);
-              setloading((pre) => false);
+              setisdone(false);
+              setloading(false);
             } else {
-              setloading((pre) => false);
-              setisdone((pre) => true);
+              setloading(false);
+              setisdone(true);
             }
           } else {
-            setloading((pre) => false);
-            setisdone((pre) => false);
+            setloading(false);
+            setisdone(false);
             return alert("Some Error");
           }
         });
@@ -41,11 +40,7 @@ export const CustomButton = ({ id, type }) => {
     const header = headers();
     if (header !== undefined) {
       axios
-        .post(
-          "http://localhost:3001/user/connectionrequest",
-          { id: id },
-          header
-        )
+        .post(`${API_BASE}/user/connectionrequest`, { id: id }, header)
         .then((res) => {
           console.log(res);
           if (res.status === 200) {
@@ -72,16 +67,21 @@ export const CustomButton = ({ id, type }) => {
     setloading((pre) => true);
     const header = headers();
     axios
-      .post("http://localhost:3001/user/acceptConnection", { id: id }, header)
+      .post(`${API_BASE}/user/acceptConnection`, { id: id }, header)
       .then((res) => {
-        if (res.statusText === "OK") {
-          setloading((pre) => false);
-          setisdone((pre) => true);
+        if (res.status === 200) {
+          setloading(false);
+          setisdone(true);
         } else {
-          setloading((pre) => false);
-          setisdone((pre) => false);
+          setloading(false);
+          setisdone(false);
           return alert("Some Error");
         }
+      })
+      .catch((err) => {
+        console.error("acceptConnection error", err);
+        setloading(false);
+        setisdone(false);
       });
   };
 
@@ -89,20 +89,21 @@ export const CustomButton = ({ id, type }) => {
     setloading((pre) => true);
     const header = headers();
     axios
-      .post(
-        "http://localhost:3001/user/deleteConnectionRequest",
-        { id: id },
-        header
-      )
+      .post(`${API_BASE}/user/deleteConnectionRequest`, { id: id }, header)
       .then((res) => {
-        if (res.statusText === "OK") {
-          setloading((pre) => false);
-          setisdone((pre) => true);
+        if (res.status === 200) {
+          setloading(false);
+          setisdone(true);
         } else {
-          setloading((pre) => false);
-          setisdone((pre) => false);
+          setloading(false);
+          setisdone(false);
           return alert("Some Error");
         }
+      })
+      .catch((err) => {
+        console.error("deleteConnectionRequest error", err);
+        setloading(false);
+        setisdone(false);
       });
   };
 
@@ -110,16 +111,21 @@ export const CustomButton = ({ id, type }) => {
     setloading((pre) => true);
     const header = headers();
     axios
-      .post("http://localhost:3001/user/acceptInterview", { id: id }, header)
+      .post(`${API_BASE}/user/acceptInterview`, { id: id }, header)
       .then((res) => {
-        if (res.statusText === "OK") {
-          setloading((pre) => false);
-          setisdone((pre) => true);
+        if (res.status === 200) {
+          setloading(false);
+          setisdone(true);
         } else {
-          setloading((pre) => false);
-          setisdone((pre) => false);
+          setloading(false);
+          setisdone(false);
           return alert("Some Error");
         }
+      })
+      .catch((err) => {
+        console.error("acceptInterview error", err);
+        setloading(false);
+        setisdone(false);
       });
   };
 
@@ -184,11 +190,12 @@ const ProfileCard = ({ object, type }) => {
     const header = headers();
     if (header !== undefined && object) {
       axios
-        .post("http://localhost:3001/user/getUserById", { id: object }, header)
+        .post(`${API_BASE}/user/getUserById`, { id: object }, header)
         .then((res) => {
           console.log("[PROFILE-CARD] User data:", res);
           if (res.status === 200) {
-            setdata(res.data.data);
+            // API returns { data: { ... } } or { data: [...] }
+            setdata(res.data.data || res.data);
           }
         })
         .catch((err) => {
@@ -242,11 +249,11 @@ export const InterviewCard = ({ id, type }) => {
     const header = headers();
     if (header !== undefined && id) {
       axios
-        .post("http://localhost:3001/interview/findById", { id: id }, header)
+        .post(`${API_BASE}/interview/findById`, { id: id }, header)
         .then((res) => {
           if (res.status === 200) {
             console.log("[INTERVIEW-CARD] Interview data:", res.data);
-            setinterview(res.data.data);
+            setinterview(res.data.data || res.data);
           }
         })
         .catch((err) => {

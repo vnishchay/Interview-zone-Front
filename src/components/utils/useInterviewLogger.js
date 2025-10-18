@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import axios from "axios";
-import headers from "../config";
+import { headers, API_BASE } from "../config";
 
 /**
  * Custom hook for logging interview session actions
