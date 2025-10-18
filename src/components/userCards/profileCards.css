@@ -7,7 +7,7 @@
   padding: 20px;
 }
 
-.card {
+.profile-card.card {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -22,7 +22,7 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
-.card:hover {
+.profile-card.card:hover {
   transform: translateY(-8px);
   border-color: rgba(102, 126, 234, 0.5);
   box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
@@ -100,7 +100,7 @@
   transform: none;
 }
 
-.card-loading {
+.profile-card.card .card-loading {
   padding: 40px 12px;
   text-align: center;
   color: #b8b8d1;
@@ -119,17 +119,19 @@
   margin-top: 8px;
 }
 
-.card.active {
+.profile-card.card.active {
   border-color: #667eea;
   box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
   transform: scale(1.05);
-} /* Responsive Design */
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .cards {
     padding: 12px;
   }
 
-  .card {
+  .profile-card.card {
     width: 100%;
     max-width: 320px;
     padding: 18px 14px;

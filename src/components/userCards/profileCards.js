@@ -209,7 +209,7 @@ const ProfileCard = ({ object, type }) => {
 
   if (loading) {
     return (
-      <div className="card">
+      <div className="profile-card card">
         <div className="card-loading">Loading...</div>
       </div>
     );
@@ -219,7 +219,7 @@ const ProfileCard = ({ object, type }) => {
     <>
       {data && (
         <div>
-          <div className="card">
+          <div className="profile-card card">
             <div>
               <Link to={`/profile/${data.username}`}>
                 <div className="profileImage">
@@ -267,14 +267,14 @@ export const InterviewCard = ({ id, type }) => {
 
   if (loading) {
     return (
-      <div className="card">
+      <div className="profile-card card">
         <div className="card-loading">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="card">
+    <div className="profile-card card">
       {interview && (
         <div>
           <div className="nameFamily">

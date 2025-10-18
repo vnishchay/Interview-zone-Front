@@ -15,10 +15,11 @@
 
 .card {
   background-color: #747c9b;
-  height: 100vh;
-  width: 100vh;
-  margin: 0;
-  flex: 1;
+  /* compact, near-square default for cards used across the app */
+  width: min(360px, 90%);
+  aspect-ratio: 4 / 5; /* width:height ≈ 4:5, near-square but slightly portrait */
+  max-width: 520px;
+  margin: 12px;
   position: relative;
   justify-content: center;
   align-items: center;
@@ -426,5 +427,13 @@ body {
     height: auto;
     overflow-y: auto;
     padding-bottom: 20px;
+  }
+
+  /* Cards should not be full-viewport on small screens; make them fluid */
+  .card {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: auto;
+    margin: 8px 0;
   }
 }
