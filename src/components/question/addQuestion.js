@@ -1,23 +1,38 @@
-import axios from 'axios';
-import React from 'react'
+import axios from "axios";
+import React from "react";
 import { useForm } from "react-hook-form";
-import  headers  from '../config';
+import { headers, API_BASE } from "../config";
+import { useParams } from "react-router-dom";
 import "./addQuestion.css";
 
-require('dotenv').config()
-
+require("dotenv").config();
 
 export default function AddQuestion() {
-  const header = headers(); 
-  const url = process.env.REACT_APP_BASE_URL === undefined ? "http://localhost:3001" : process.env.REACT_APP_BASE_URL;
+  const header = headers();
+  const url = API_BASE;
+  const { register, handleSubmit } = useForm({
+    shouldUseNativeValidation: true,
+  });
+  // read interviewID from route params at component top-level (valid hook usage)
+  const { id: interviewID } = useParams();
 
-  const { register, handleSubmit } = useForm({ shouldUseNativeValidation: true });
-  const onSubmit = async data => {
-    if(header !== undefined) {
-    axios.post(url + "/question/create", data, header).then((res) => {
-      console.log(res.data)
-    })
-  } 
+  const onSubmit = async (data) => {
+    if (header !== undefined) {
+      const payload = { ...data };
+      if (interviewID) payload.interviewID = interviewID;
+
+      axios
+        .post(`${url}/question/create`, payload, header)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err) =>
+          console.error(
+            "AddQuestion error",
+            err?.response?.data || err.message || err
+          )
+        );
+    }
   };
 
   return (
@@ -73,7 +88,6 @@ export default function AddQuestion() {
             </div>
           </div> */}
 
-
             <div className="col">
               <div className="form-group">
                 <label>Solution</label>
@@ -82,16 +96,12 @@ export default function AddQuestion() {
               </div>
             </div>
 
-
             <div className="col">
               <input type="submit" value="Submit" />
             </div>
           </div>
-
         </form>
       </div>
     </div>
-  )
+  );
 }
-
-

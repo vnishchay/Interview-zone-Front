@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import headers from "../config";
+import { headers, API_BASE } from "../config";
 import "./profilepage.css";
 import { CustomButton } from "../userCards/profileCards";
 import { useAuth } from "../auth/authContext";
@@ -19,7 +19,6 @@ export default function ProfilePage() {
     email: "",
     country: "",
   });
-
   // Determine if this is the logged-in user's own profile
   const isOwnProfile =
     (!id && state.user) ||
@@ -31,25 +30,32 @@ export default function ProfilePage() {
   useEffect(() => {
     const header = headers();
     if (header !== undefined && id === undefined) {
-      axios.get("http://localhost:3001/user/profile", header).then((res) => {
-        if (res.status === 200) {
-          setData(res.data);
-          if (res.data && res.data.user) {
-            setIsHost(!!res.data.user.ishost);
-            setIsCandidate(!!res.data.user.iscandidate);
-            setEditForm({
-              name: res.data.user.name || "",
-              email: res.data.user.email || "",
-              country: res.data.user.country || "",
-            });
+      axios
+        .get(`${API_BASE}/user/profile`, header)
+        .then((res) => {
+          if (res.status === 200) {
+            const payload =
+              res.data && res.data.user ? res.data.user : res.data;
+            setData(res.data);
+            if (payload) {
+              setIsHost(!!payload.ishost);
+              setIsCandidate(!!payload.iscandidate);
+              setEditForm({
+                name: payload.name || "",
+                email: payload.email || "",
+                country: payload.country || "",
+              });
+            }
           }
-        }
-      });
+        })
+        .catch((err) => {
+          console.warn("Could not fetch profile:", err?.message || err);
+        });
     } else {
       if (header !== undefined) {
         axios
           .post(
-            "http://localhost:3001/user/findSingleProfileWithFilter",
+            `${API_BASE}/user/findSingleProfileWithFilter`,
             { username: id },
             header
           )
@@ -87,7 +93,7 @@ export default function ProfilePage() {
     const header = headers();
     if (header !== undefined) {
       axios
-        .put("http://localhost:3001/user/profile", update, header)
+        .put(`${API_BASE}/user/profile`, update, header)
         .then((res) => {
           if (res.status !== 200) {
             setEditError("Failed to update role");
@@ -104,19 +110,17 @@ export default function ProfilePage() {
     const header = headers();
     if (header !== undefined) {
       axios
-        .put("http://localhost:3001/user/profile", editForm, header)
+        .put(`${API_BASE}/user/profile`, editForm, header)
         .then((res) => {
           if (res.status === 200) {
             setData(res.data);
             setIsEditing(false);
             // Refresh the data
-            axios
-              .get("http://localhost:3001/user/profile", header)
-              .then((response) => {
-                if (response.status === 200) {
-                  setData(response.data);
-                }
-              });
+            axios.get(`${API_BASE}/user/profile`, header).then((response) => {
+              if (response.status === 200) {
+                setData(response.data);
+              }
+            });
           } else {
             setEditError("Failed to update profile");
           }

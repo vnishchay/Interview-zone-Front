@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import Video from "../videocall/video";
 import { useLocation, useParams } from "react-router-dom";
 import headers from "../config.js";
+import { API_BASE } from "../config";
 import { useAuth } from "../auth/authContext";
 import socket from "../socket";
 import { useInterviewLogger } from "../utils/useInterviewLogger";
@@ -52,7 +53,7 @@ export default function InterviewPage() {
       console.log("[INTERVIEW PAGE] Fetching interview data...");
       axios
         .post(
-          "http://localhost:3001/interview/findfilter",
+          `${API_BASE}/interview/findfilter`,
           { interviewID: interviewID },
           header
         )
@@ -77,7 +78,7 @@ export default function InterviewPage() {
                   // Try to fetch canonical profile from backend
                   if (header) {
                     const profileRes = await axios.get(
-                      "http://localhost:3001/user/profile",
+                      `${API_BASE}/user/profile`,
                       header
                     );
                     const profileData =
@@ -223,7 +224,7 @@ export default function InterviewPage() {
     if (header !== undefined) {
       console.log("[INTERVIEW PAGE] Fetching questions...");
       axios
-        .get("http://localhost:3001/question/get", header)
+        .get(`${API_BASE}/question/get`, header)
         .then((res) => {
           console.log("[INTERVIEW PAGE] Questions received:", res.data);
           setquestions(res.data.data || []);

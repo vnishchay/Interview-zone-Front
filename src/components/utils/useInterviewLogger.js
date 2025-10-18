@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import axios from "axios";
-import headers from "../config";
+import { headers, API_BASE } from "../config";
 
 /**
  * Custom hook for logging interview session actions
@@ -19,7 +19,7 @@ export const useInterviewLogger = (interviewID, userName) => {
 
         const header = headers();
         await axios.post(
-          "http://localhost:3001/interview/log",
+          `${API_BASE}/interview/log`,
           {
             interviewID,
             action,
@@ -99,7 +99,7 @@ export const useInterviewLogger = (interviewID, userName) => {
       try {
         const header = headers();
         await axios.post(
-          "http://localhost:3001/interview/code",
+          `${API_BASE}/interview/code`,
           {
             interviewID,
             code,
@@ -119,7 +119,7 @@ export const useInterviewLogger = (interviewID, userName) => {
       try {
         const header = headers();
         await axios.post(
-          "http://localhost:3001/interview/questions",
+          `${API_BASE}/interview/questions`,
           {
             interviewID,
             questions,

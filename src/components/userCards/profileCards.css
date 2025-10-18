@@ -7,22 +7,22 @@
   padding: 20px;
 }
 
-.card {
+.profile-card.card {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  padding: 32px 28px;
-  margin: 10px;
+  border-radius: 16px;
+  padding: 18px 16px;
+  margin: 8px;
   text-align: center;
-  width: 280px;
+  width: 260px;
   max-width: 100%;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
-.card:hover {
+.profile-card.card:hover {
   transform: translateY(-8px);
   border-color: rgba(102, 126, 234, 0.5);
   box-shadow: 0 12px 32px rgba(102, 126, 234, 0.3);
@@ -30,16 +30,16 @@
 }
 
 .profileImage {
-  width: 80px;
-  height: 80px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin: 0 auto 16px;
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  margin: 0 auto 10px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: white;
   font-weight: 600;
 }
@@ -51,20 +51,20 @@
 }
 
 .nameFamily {
-  margin: 16px 0 24px;
+  margin: 8px 0 12px;
 }
 
 .nameFamily p {
-  margin: 0 0 8px;
-  font-size: 1.25rem;
+  margin: 0 0 6px;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #fff;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 
 .nameFamily span {
   color: #b8b8d1;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   display: block;
 }
@@ -72,17 +72,17 @@
 .btn-0 {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #fff;
-  padding: 12px 28px;
-  font-size: 0.95rem;
+  padding: 10px 18px;
+  font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   width: 100%;
-  margin-top: 12px;
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  margin-top: 8px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.28);
 }
 
 .btn-0:hover {
@@ -100,8 +100,8 @@
   transform: none;
 }
 
-.card-loading {
-  padding: 60px 20px;
+.profile-card.card .card-loading {
+  padding: 40px 12px;
   text-align: center;
   color: #b8b8d1;
   font-size: 0.95rem;
@@ -110,37 +110,39 @@
 .success-badge {
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;
-  padding: 12px 28px;
-  border-radius: 12px;
+  padding: 10px 18px;
+  border-radius: 10px;
   font-weight: 600;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.28);
   width: 100%;
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
-.card.active {
+.profile-card.card.active {
   border-color: #667eea;
   box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
   transform: scale(1.05);
-} /* Responsive Design */
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .cards {
     padding: 12px;
   }
 
-  .card {
+  .profile-card.card {
     width: 100%;
     max-width: 320px;
-    padding: 28px 24px;
+    padding: 18px 14px;
   }
 
   .nameFamily p {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 
   .btn-0 {
-    padding: 10px 24px;
+    padding: 8px 16px;
     font-size: 0.9rem;
   }
 }
