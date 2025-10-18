@@ -5,8 +5,6 @@ import { headers, API_BASE } from "../config";
 import { useParams } from "react-router-dom";
 import "./addQuestion.css";
 
-require("dotenv").config();
-
 export default function AddQuestion() {
   const header = headers();
   const url = API_BASE;
