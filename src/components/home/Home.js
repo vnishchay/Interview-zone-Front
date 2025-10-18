@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import Navbar from "./navbar";
 import Login from "../auth/login";
 import axios from "axios";
-import { headers } from "../config";
+import { headers, API_BASE } from "../config";
 
 export const create = (history) => {
   const header = headers();
@@ -16,11 +16,7 @@ export const create = (history) => {
   try {
     if (header !== undefined) {
       axios
-        .post(
-          "http://localhost:3001/interview/create",
-          { interviewID: id },
-          header
-        )
+        .post(`${API_BASE}/interview/create`, { interviewID: id }, header)
         .then((res) => {
           console.log(res);
           if (res.statusText === "OK") {
@@ -49,7 +45,7 @@ export default function Home() {
       const header = headers();
       if (header !== undefined) {
         axios
-          .get("http://localhost:3001/user/profile", header)
+          .get(`${API_BASE}/user/profile`, header)
           .then((res) => {
             if (res.status === 200 && res.data.user) {
               const interviewReqCount =
@@ -76,7 +72,7 @@ export default function Home() {
     if (header !== undefined) {
       axios
         .post(
-          "http://localhost:3001/interview/findfilter",
+          `${API_BASE}/interview/findfilter`,
           { interviewID: id[id.length - 1] },
           header
         )
@@ -87,7 +83,7 @@ export default function Home() {
               const id = res.data.data[0].id;
               axios
                 .post(
-                  "http://localhost:3001/interview/update/" + id,
+                  `${API_BASE}/interview/update/${id}`,
                   { idOfParticipant: "update" },
                   header
                 )

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Link, useHistory } from "react-router-dom";
 import "./register.css";
+import { API_BASE } from "../config";
 
 export default function Register() {
   const history = useHistory();
@@ -17,8 +18,7 @@ export default function Register() {
   const signup = (formData) => {
     setErrorMessage("");
     setSuccessMessage("");
-    axios
-      .post("http://localhost:3001/signup", formData)
+    axios.post(`${API_BASE}/signup`, formData)
       .then((res) => {
         if (res.status === 201 || res.status === 200) {
           setisdone(true);
@@ -41,8 +41,7 @@ export default function Register() {
   useEffect(() => {
     if (username !== "") {
       setCheckingUsername(true);
-      axios
-        .post("http://localhost:3001/verifyusername", { username: username })
+      axios.post(`${API_BASE}/verifyusername`, { username: username })
         .then((res) => {
           if (res.data.status === "success") {
             setisfinal(true);

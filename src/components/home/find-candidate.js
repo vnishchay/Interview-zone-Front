@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { headers } from "../config";
+import { headers, API_BASE } from "../config";
 import ProfileCard from "../userCards/profileCards";
 import Navbar from "./navbar";
 
@@ -16,7 +16,7 @@ export default function FindCandidate() {
       // This endpoint should fetch users who want to be interviewed (ishost: false)
       // You may need to create a new backend endpoint for this
       axios
-        .get("http://localhost:3001/user/candidate", header)
+        .get(`${API_BASE}/user/candidate`, header)
         .then((res) => {
           if (res.statusText === "OK") {
             console.log("[FIND-CANDIDATE] Fetched candidates:", res.data.data);

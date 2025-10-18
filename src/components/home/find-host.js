@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { headers } from "../config";
+import { headers, API_BASE } from "../config";
 import ProfileCard from "../userCards/profileCards";
 import Navbar from "./navbar";
 
@@ -14,7 +14,7 @@ export default function FindHost() {
     const header = headers();
     if (header !== undefined) {
       axios
-        .get("http://localhost:3001/user/interviewer", header)
+        .get(`${API_BASE}/user/interviewer`, header)
         .then((res) => {
           if (res.statusText === "OK") {
             console.log("[FIND-HOST] Fetched hosts:", res.data.data);
