@@ -11,7 +11,6 @@ import { API_BASE } from "../config";
 import { useAuth } from "../auth/authContext";
 import socket from "../socket";
 import { useInterviewLogger } from "../utils/useInterviewLogger";
-require("dotenv").config();
 
 export default function InterviewPage() {
   const location = useLocation();

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { Route, Redirect } from "react-router-dom";
-require("dotenv").config();
 const AuthContext = createContext();
 
 // Initialize auth state from localStorage so refreshes keep the user
