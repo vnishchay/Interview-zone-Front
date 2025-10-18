@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import headers from "../config";
+import { API_BASE } from "../config";
 import { useParams } from "react-router-dom";
 import "./addQuestion.css";
 
@@ -9,10 +10,7 @@ require("dotenv").config();
 
 export default function AddQuestion() {
   const header = headers();
-  const url =
-    process.env.REACT_APP_BASE_URL === undefined
-      ? "http://localhost:3001"
-      : process.env.REACT_APP_BASE_URL;
+  const url = API_BASE;
   const { register, handleSubmit } = useForm({
     shouldUseNativeValidation: true,
   });
@@ -25,7 +23,7 @@ export default function AddQuestion() {
       if (interviewID) payload.interviewID = interviewID;
 
       axios
-        .post(url + "/question/create", payload, header)
+        .post(`${url}/question/create`, payload, header)
         .then((res) => {
           console.log(res.data);
         })

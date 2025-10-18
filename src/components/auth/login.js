@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "./authContext";
 import axios from "axios";
+import { API_BASE } from "../config";
 import { Link, useHistory } from "react-router-dom";
 import "./login.css";
 
@@ -43,7 +44,7 @@ export const Login = () => {
     if (!validate()) return;
     setData((d) => ({ ...d, isSubmitting: true, errorMessage: null }));
     axios
-      .post("http://localhost:3001/login", {
+      .post(`${API_BASE}/login`, {
         email: data.email,
         password: data.password,
       })

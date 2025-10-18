@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import headers from "../config";
+import headers, { API_BASE } from "../config";
 import ProfileCard, { InterviewCard } from "../userCards/profileCards";
 import "./activity.css";
 
@@ -13,7 +13,7 @@ const Activity = () => {
     const header = headers();
     if (header !== undefined) {
       axios
-        .get("http://localhost:3001/user/profile", header)
+        .get(`${API_BASE}/user/profile`, header)
         .then((res) => {
           if (res.status === 200 && res.data.user) {
             console.log("[ACTIVITY] Profile data:", res.data);
