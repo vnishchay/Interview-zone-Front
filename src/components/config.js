@@ -1,6 +1,6 @@
 // Base API URL can be configured via REACT_APP_API_URL in environment
 export const API_BASE =
-  process.env.REACT_APP_API_URL || "http://localhost:3001";
+  process.env.REACT_APP_API_URL || "https://interview-zone-backend.onrender.com" || "http://localhost:3001";
 
 export const headers = () => {
   const token = localStorage.getItem("token");
