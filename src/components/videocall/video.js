@@ -291,32 +291,6 @@ export default function Video({
 
   return (
     <div className="video-container-wrapper">
-      <div className="video-controls">
-        <div className="control-buttons">
-          <button
-            className={`control-btn ${!isvideo ? "disabled" : ""}`}
-            onClick={toggleVideo}
-            title={isvideo ? "Turn off camera" : "Turn on camera"}
-          >
-            {isvideo ? "📹" : "🚫📹"}
-          </button>
-          <button
-            className={`control-btn ${!isaudio ? "disabled" : ""}`}
-            onClick={toggleMic}
-            title={isaudio ? "Mute microphone" : "Unmute microphone"}
-          >
-            {isaudio ? "🎤" : "🔇"}
-          </button>
-        </div>
-
-        {isConnected && (
-          <div className="connection-status">
-            <span className="status-dot"></span>
-            <span>Connected</span>
-          </div>
-        )}
-      </div>
-
       <div className="videos-grid">
         <div className="video-wrapper my-video-wrapper">
           <video
@@ -326,9 +300,32 @@ export default function Video({
             ref={myVideo}
             autoPlay
           />
+          {/* Overlay controls on user's video */}
+          <div className="video-controls-overlay">
+            <button
+              className={`control-btn ${!isvideo ? "disabled" : ""}`}
+              onClick={toggleVideo}
+              title={isvideo ? "Turn off camera" : "Turn on camera"}
+            >
+              {isvideo ? "📹" : "🚫📹"}
+            </button>
+            <button
+              className={`control-btn ${!isaudio ? "disabled" : ""}`}
+              onClick={toggleMic}
+              title={isaudio ? "Mute microphone" : "Unmute microphone"}
+            >
+              {isaudio ? "🎤" : "🔇"}
+            </button>
+          </div>
           <div className="video-label">
             <span className="username-badge">{myName} (You)</span>
           </div>
+          {isConnected && (
+            <div className="connection-status-overlay">
+              <span className="status-dot"></span>
+              <span>Connected</span>
+            </div>
+          )}
         </div>
 
         <div className="video-wrapper peer-video-wrapper">

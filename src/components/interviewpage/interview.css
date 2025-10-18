@@ -47,6 +47,51 @@
   overflow: hidden;
 }
 
+/* Control Panel - Host Only */
+.control-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.15) 0%,
+    rgba(118, 75, 162, 0.15) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+  padding: 12px 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 100;
+}
+
+.panel-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(102, 126, 234, 0.5);
+  color: white;
+}
+
+.panel-toggle.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 .interview-header {
   background: linear-gradient(
     135deg,
@@ -122,13 +167,33 @@
   flex: 1;
   display: grid;
   grid-template-columns: 1.8fr 1.6fr;
-  grid-template-rows: 1fr 0.5fr;
+  grid-template-rows: 0.6fr 1.2fr;
   gap: 0;
   grid-template-areas:
     "editor video"
     "editor questions";
-  height: calc(100vh - 80px);
+  height: calc(100vh - 60px);
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Video-only mode (Google Meet style default) */
+.container.video-only {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "video";
+}
+
+
+.container.video-only .VideoCall {
+  grid-area: video;
+  width: 100vw;
+  height: 100vh;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .TextArea {
@@ -150,7 +215,28 @@
   overflow-y: auto;
   background: #0d0d35;
   border-top: 1px solid rgba(102, 126, 234, 0.2);
-  padding: 15px;
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Enhance question card visibility */
+.Questions ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.Questions ::-webkit-scrollbar-track {
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 4px;
+}
+
+.Questions ::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.4);
+  border-radius: 4px;
+}
+
+.Questions ::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.6);
 }
 
 .VideoCall {

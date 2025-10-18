@@ -21,9 +21,13 @@ export default function InterviewPage() {
   const [questions, setquestions] = useState([]);
   const [hostName, setHostName] = useState("Host");
   const [candidateName, setCandidateName] = useState("Candidate");
+  const [hostId, setHostId] = useState(null);
+  const [participantId, setParticipantId] = useState(null);
   const [currentUserRole, setCurrentUserRole] = useState("Participant");
   const [currentUserName, setCurrentUserName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showEditor, setShowEditor] = useState(false);
+  const [showQuestions, setShowQuestions] = useState(false);
   const header = headers();
 
   // Initialize logger
@@ -47,13 +51,30 @@ export default function InterviewPage() {
             const interview = res.data.data[0];
             setHostName(interview.hostname || "Host");
             setCandidateName(interview.candidatename || "Candidate");
+            setHostId(interview.idOfHost || null);
+            setParticipantId(interview.idOfParticipant || null);
 
             // Determine current user's role
             if (authState.user) {
               const currentUsername = authState.user.username;
+              const currentUserId =
+                authState.user.id || authState.user._id || null;
               setCurrentUserName(currentUsername);
 
-              if (currentUsername === interview.hostname) {
+              // Prefer ID-based check if possible
+              if (
+                currentUserId &&
+                interview.idOfHost &&
+                String(currentUserId) === String(interview.idOfHost)
+              ) {
+                setCurrentUserRole("Host");
+              } else if (
+                currentUserId &&
+                interview.idOfParticipant &&
+                String(currentUserId) === String(interview.idOfParticipant)
+              ) {
+                setCurrentUserRole("Candidate");
+              } else if (currentUsername === interview.hostname) {
                 setCurrentUserRole("Host");
               } else if (currentUsername === interview.candidatename) {
                 setCurrentUserRole("Candidate");
@@ -65,7 +86,13 @@ export default function InterviewPage() {
                 "[INTERVIEW PAGE] Current user:",
                 currentUsername,
                 "Role:",
-                currentUsername === interview.hostname ? "Host" : "Candidate"
+                currentUserId &&
+                  interview.idOfHost &&
+                  String(currentUserId) === String(interview.idOfHost)
+                  ? "Host"
+                  : currentUsername === interview.hostname
+                  ? "Host"
+                  : "Candidate"
               );
             }
           }
@@ -140,23 +167,57 @@ export default function InterviewPage() {
     );
   }
 
-  const isHost = currentUserName === hostName;
+  // Determine host by ID when possible, otherwise fall back to username
+  const authUserId =
+    (authState.user && (authState.user.id || authState.user._id)) || null;
+  const isHost =
+    authUserId && hostId
+      ? String(authUserId) === String(hostId)
+      : currentUserName === hostName;
 
   return (
     <div className="interview-container">
+      {/* Control Panel - Only visible to Host */}
+      {isHost && (
+        <div className="control-panel">
+          <button
+            className={`panel-toggle ${showEditor ? "active" : ""}`}
+            onClick={() => setShowEditor(!showEditor)}
+            title="Toggle Code Editor"
+          >
+            📝 Code Editor
+          </button>
+          <button
+            className={`panel-toggle ${showQuestions ? "active" : ""}`}
+            onClick={() => setShowQuestions(!showQuestions)}
+            title="Toggle Questions Panel"
+          >
+            ❓ Questions
+          </button>
+        </div>
+      )}
+
       {/* Main Interview Content */}
-      <div className="container">
-        <div className="TextArea">
-          <TextEditor />
-        </div>
-        <div className="Questions">
-          <Questions
-            questions={questions}
-            isHost={isHost}
-            onQuestionsUpdate={handleQuestionsUpdate}
-            logger={logger}
-          />
-        </div>
+      <div
+        className={`container ${
+          !showEditor && !showQuestions ? "video-only" : ""
+        }`}
+      >
+        {showEditor && (
+          <div className="TextArea">
+            <TextEditor />
+          </div>
+        )}
+        {showQuestions && isHost && (
+          <div className="Questions">
+            <Questions
+              questions={questions}
+              isHost={isHost}
+              onQuestionsUpdate={handleQuestionsUpdate}
+              logger={logger}
+            />
+          </div>
+        )}
         <div className="VideoCall">
           <Video
             constraints={constraints}
