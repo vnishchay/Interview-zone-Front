@@ -253,3 +253,22 @@
     font-size: 18px;
   }
 }
+
+/* Force horizontal, full-height two-column layout when no editor and no questions
+   are enabled (video-only mode). This overrides the vertical stacked layout used
+   for expanded/host views so both video tiles share the available space. */
+.container.video-only .VideoCall {
+  /* Let VideoCall fill the container area */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.container.video-only .VideoCall .videos-grid {
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: none !important;
+  gap: 15px;
+  height: 100%;
+}
+.container.video-only .VideoCall .videos-grid .video-wrapper {
+  height: 100%;
+}

@@ -32,6 +32,15 @@ export default function InterviewPage() {
   const [showSettings, setShowSettings] = useState(false);
   const header = headers();
 
+  // Determine host by role first (computed earlier), fall back to ID or username checks
+  const authUserId =
+    (authState.user && (authState.user.id || authState.user._id)) || null;
+  const idMatch =
+    authUserId && hostId ? String(authUserId) === String(hostId) : false;
+  const nameMatch =
+    currentUserName && hostName ? currentUserName === hostName : false;
+  const isHost = currentUserRole === "Host" || idMatch || nameMatch;
+
   // Initialize logger
   const logger = useInterviewLogger(interviewID, currentUserName);
 
@@ -193,7 +202,12 @@ export default function InterviewPage() {
     };
     const onToggleQuestions = (data) => {
       if (data && typeof data.enabled === "boolean") {
-        setShowQuestions(data.enabled);
+        // Questions are host-private. Only apply incoming question-toggle events
+        // if this client is the host. Other participants should ignore this so
+        // their screen doesn't get distorted when interviewer opens/hides questions.
+        if (isHost) {
+          setShowQuestions(data.enabled);
+        }
       }
     };
     socket.on("toggle-editor", onToggleEditor);
@@ -202,7 +216,7 @@ export default function InterviewPage() {
       socket.off("toggle-editor", onToggleEditor);
       socket.off("toggle-questions", onToggleQuestions);
     };
-  }, []);
+  }, [isHost]);
 
   // Fetch questions
   useEffect(() => {
@@ -249,18 +263,9 @@ export default function InterviewPage() {
     );
   }
 
-  // Determine host by role first (computed earlier), fall back to ID or username checks
-  const authUserId =
-    (authState.user && (authState.user.id || authState.user._id)) || null;
-  const idMatch =
-    authUserId && hostId ? String(authUserId) === String(hostId) : false;
-  const nameMatch =
-    currentUserName && hostName ? currentUserName === hostName : false;
-  const isHost = currentUserRole === "Host" || idMatch || nameMatch;
-
-  // When candidate is viewing and the questions panel is hidden,
-  // expand the video area to occupy the right column (both rows) so video isn't cramped.
-  const videoExpandRight = !isHost && !showQuestions;
+  // When the questions panel is hidden, expand the video area to occupy the right column
+  // (both rows) so video isn't cramped. Applies to both host and candidate.
+  const videoExpandRight = !showQuestions;
 
   return (
     <div className="interview-container">
