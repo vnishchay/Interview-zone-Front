@@ -1,0 +1,41 @@
+name: Build and deploy frontend (monorepo)
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+jobs:
+    build_and_deploy_monorepo:
+        name: Build and deploy Interview-zone-Front
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Use Node.js 18
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 18
+
+            - name: Install dependencies (subfolder)
+              run: |
+                  cd Interview-zone-Front
+                  npm ci
+
+            - name: Build (subfolder)
+              run: |
+                  cd Interview-zone-Front
+                  npm run build
+              env:
+                  NODE_OPTIONS: --openssl-legacy-provider
+                  DISABLE_ESLINT_PLUGIN: "true"
+
+            - name: Deploy to Firebase Hosting (subfolder)
+              uses: FirebaseExtended/action-hosting-deploy@v0
+              with:
+                  repoToken: "${{ secrets.GITHUB_TOKEN }}"
+                  firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+                  projectId: "webrtc-d152b"
+                  entryPoint: "Interview-zone-Front"
