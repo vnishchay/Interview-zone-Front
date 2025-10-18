@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "export NODE_OPTIONS=--openssl-legacy-provider && npx --yes react-scripts start",
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider && npx --yes react-scripts build",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider DISABLE_ESLINT_PLUGIN=true && npx --yes react-scripts build",
     "test": "export NODE_OPTIONS=--openssl-legacy-provider && npx --yes react-scripts test --env=jsdom",
     "eject": "npx --yes react-scripts eject"
   },
