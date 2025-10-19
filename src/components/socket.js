@@ -14,7 +14,7 @@ function ensureSocket() {
   // Initialize the real socket when first needed
   realSocket = io(API_BASE);
   realSocket.on("connect", () => {
-    console.log("[SOCKET] connected", realSocket.id);
+    // socket connected (silenced)
   });
   realSocket.on("connect_error", (err) => {
     console.warn(

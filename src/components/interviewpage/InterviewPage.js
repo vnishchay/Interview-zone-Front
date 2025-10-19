@@ -57,14 +57,14 @@ export default function InterviewPage() {
   const logger = useInterviewLogger(interviewID, currentUserName);
   const { logJoin, logLeave } = logger || {};
 
-  console.log("[INTERVIEW PAGE] Rendering with interviewID:", interviewID);
+  // debug render info removed
 
   // Fetch interview details
   useEffect(() => {
     if (fetchedInterviewRef.current) return;
     if (header !== undefined && interviewID) {
       fetchedInterviewRef.current = true;
-      console.log("[INTERVIEW PAGE] Fetching interview data...");
+  // debug: fetching interview data (silenced)
       axios
         .post(
           `${API_BASE}/interview/findfilter`,
@@ -72,7 +72,7 @@ export default function InterviewPage() {
           header
         )
         .then((res) => {
-          console.log("[INTERVIEW PAGE] Interview data received:", res.data);
+          // debug: interview data received (silenced)
           if (res.status === 200 && res.data.data && res.data.data.length > 0) {
             const interview = res.data.data[0];
             setHostName(interview.hostname || "Host");
@@ -134,18 +134,7 @@ export default function InterviewPage() {
                     setCurrentUserRole("Observer");
                   }
 
-                  console.log(
-                    "[INTERVIEW PAGE] Current user:",
-                    currentUsername,
-                    "Role:",
-                    currentUserId &&
-                      interview.idOfHost &&
-                      String(currentUserId) === String(interview.idOfHost)
-                      ? "Host"
-                      : currentUsername === interview.hostname
-                      ? "Host"
-                      : "Candidate"
-                  );
+                  // debug: current user role resolved (silenced)
                 } catch (err) {
                   console.warn(
                     "[INTERVIEW PAGE] Could not fetch canonical profile, falling back to local authState:",
@@ -183,9 +172,9 @@ export default function InterviewPage() {
           setLoading(false);
         })
         .catch((err) => {
-          console.error("[INTERVIEW PAGE] Error fetching interview data:", err);
-          setLoading(false);
-        });
+            console.error("[INTERVIEW PAGE] Error fetching interview data:", err);
+            setLoading(false);
+          });
     } else {
       setLoading(false);
     }
@@ -238,11 +227,11 @@ export default function InterviewPage() {
     if (fetchedQuestionsRef.current) return;
     if (header !== undefined) {
       fetchedQuestionsRef.current = true;
-      console.log("[INTERVIEW PAGE] Fetching questions...");
+  // debug: fetching questions (silenced)
       axios
         .get(`${API_BASE}/question/get`, header)
         .then((res) => {
-          console.log("[INTERVIEW PAGE] Questions received:", res.data);
+          // debug: questions received (silenced)
           setquestions(res.data.data || []);
         })
         .catch((err) => {
@@ -252,14 +241,7 @@ export default function InterviewPage() {
     }
   }, [token]);
 
-  console.log("[INTERVIEW PAGE] Current state:", {
-    hostName,
-    candidateName,
-    currentUserRole,
-    questionsCount: questions?.length,
-    participantId,
-    loading,
-  });
+    // debug: current state (silenced)
 
   const handleQuestionsUpdate = (updatedQuestions) => {
     setquestions(updatedQuestions);

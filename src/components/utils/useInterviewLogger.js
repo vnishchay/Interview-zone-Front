@@ -13,7 +13,7 @@ export const useInterviewLogger = (interviewID, userName) => {
     async (action, details = {}) => {
       try {
         if (!interviewID || !userName) {
-          console.warn("[LOGGER] Missing interviewID or userName");
+          // missing context for logging; skip
           return;
         }
 
@@ -29,9 +29,9 @@ export const useInterviewLogger = (interviewID, userName) => {
           header
         );
 
-        console.log(`[SESSION LOG] ${userName} - ${action}:`, details);
+        // persisted session log to server
       } catch (error) {
-        console.error("[SESSION LOG ERROR]:", error);
+        // swallow logging errors to avoid noisy client console
       }
     },
     [interviewID, userName]
@@ -106,9 +106,9 @@ export const useInterviewLogger = (interviewID, userName) => {
           },
           header
         );
-        console.log("[CODE SNAPSHOT] Saved successfully");
+        // snapshot saved
       } catch (error) {
-        console.error("[CODE SNAPSHOT ERROR]:", error);
+        // swallow
       }
     },
     [interviewID]
@@ -126,9 +126,9 @@ export const useInterviewLogger = (interviewID, userName) => {
           },
           header
         );
-        console.log("[FINAL QUESTIONS] Saved successfully");
+        // final questions saved
       } catch (error) {
-        console.error("[FINAL QUESTIONS ERROR]:", error);
+        // swallow
       }
     },
     [interviewID]

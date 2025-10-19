@@ -67,8 +67,7 @@ export const CustomButton = ({ id, type }) => {
     if (header !== undefined) {
       axios
         .post(`${API_BASE}/user/interviewRequest`, { id: id }, header)
-        .then((res) => {
-          console.log(res);
+      .then((res) => {
           if (res.status === 200) {
             if (res.data && res.data.isConnection === false) {
               alert("Make connection first");
@@ -93,8 +92,7 @@ export const CustomButton = ({ id, type }) => {
     if (header !== undefined) {
       axios
         .post(`${API_BASE}/user/connectionrequest`, { id: id }, header)
-        .then((res) => {
-          console.log(res);
+      .then((res) => {
           if (res.status === 200) {
             setloading((pre) => false);
             setisdone((pre) => true);
@@ -120,7 +118,7 @@ export const CustomButton = ({ id, type }) => {
     const header = headers();
     axios
       .post(`${API_BASE}/user/acceptConnection`, { id: id }, header)
-      .then((res) => {
+          .then((res) => {
         if (res.status === 200) {
           setloading(false);
           setisdone(true);
@@ -215,7 +213,7 @@ export const CustomButton = ({ id, type }) => {
           {type === 6 && (
             <button
               className="btn-0"
-              onClick={() => console.log("TO be implemented")}
+              onClick={() => { /* TODO: implement */ }}
             >
               Remove Connection
             </button>
@@ -223,7 +221,7 @@ export const CustomButton = ({ id, type }) => {
           {type === 7 && (
             <button
               className="btn-0"
-              onClick={() => console.log("TO be implemented")}
+              onClick={() => { /* TODO: implement */ }}
             >
               Accept Interview Request
             </button>

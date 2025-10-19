@@ -61,7 +61,7 @@ export default function SetupVideo() {
 //       trickle: false,
 //       stream: stream,
 //     });
-//     console.log(stream)
+//     // debug: stream
 
 //     peer.on("signal", (data) => {
 //       sock.emit("callUser", {
@@ -91,7 +91,7 @@ export default function SetupVideo() {
 //       stream: stream,
 //     });
 
-//     console.log(stream);
+//     // debug: stream
 //     setCallAccepted(true);
 //     setCallEnded(false);
 //     peer.on("signal", (data) => {

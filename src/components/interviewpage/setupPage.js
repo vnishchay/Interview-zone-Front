@@ -11,8 +11,6 @@ export default function SetupPage() {
   const [isvideo, setisvideo] = useState(true);
   const [stream, setstream] = useState(null);
 
-  console.log("[SETUP PAGE] Interview ID:", id);
-
   useEffect(() => {
     let mounted = true;
 
@@ -26,7 +24,6 @@ export default function SetupPage() {
         if (mounted && videoRef.current) {
           videoRef.current.srcObject = mediaStream;
           setstream(mediaStream);
-          console.log("[SETUP PAGE] Media stream initialized");
         }
       } catch (err) {
         console.error("[SETUP PAGE] Media error:", err);
@@ -48,7 +45,6 @@ export default function SetupPage() {
       if (stream) {
         stream.getTracks().forEach((track) => {
           track.stop();
-          console.log("[SETUP PAGE] Stopped track:", track.kind);
         });
       }
     };
@@ -63,7 +59,6 @@ export default function SetupPage() {
       stream.getAudioTracks().forEach((track) => {
         track.enabled = newAudioState;
       });
-      console.log("[SETUP PAGE] Audio toggled:", newAudioState);
     }
   };
 
@@ -76,7 +71,6 @@ export default function SetupPage() {
       stream.getVideoTracks().forEach((track) => {
         track.enabled = newVideoState;
       });
-      console.log("[SETUP PAGE] Video toggled:", newVideoState);
     }
   };
 

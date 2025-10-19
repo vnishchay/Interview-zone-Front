@@ -55,11 +55,12 @@ export default function Video({
       const newVideoState = !isvideo;
       setisvideo(newVideoState);
       streamRef.current.getVideoTracks()[0].enabled = newVideoState;
-      console.log("[VIDEO] Toggled video:", newVideoState);
-
-      // Log the action
-      if (logger && logger.logVideoToggle) {
-        logger.logVideoToggle(newVideoState);
+      try {
+        if (logger && typeof logger.logVideoToggle === "function") {
+          logger.logVideoToggle(newVideoState);
+        }
+      } catch (e) {
+        /* swallow */
       }
     }
   }
@@ -69,29 +70,38 @@ export default function Video({
       const newAudioState = !isaudio;
       setisaudio(newAudioState);
       streamRef.current.getAudioTracks()[0].enabled = newAudioState;
-      console.log("[VIDEO] Toggled audio:", newAudioState);
-
-      // Log the action
-      if (logger && logger.logAudioToggle) {
-        logger.logAudioToggle(newAudioState);
+      // Log the action (non-blocking). Avoid console output in production.
+      try {
+        if (logger && typeof logger.logAudioToggle === "function") {
+          logger.logAudioToggle(newAudioState);
+        }
+      } catch (e) {
+        /* swallow logging errors */
       }
     }
   }
 
   useEffect(() => {
-    console.log(
-      "[VIDEO] Initializing video for user:",
-      myName,
-      "in room:",
-      videoID
-    );
+    try {
+      if (logger && typeof logger.logAction === "function") {
+        logger.logAction("video_init", { myName, videoID });
+      }
+    } catch (e) {
+      /* swallow */
+    }
     let localStream = null;
 
     // Step 1: Get local media (independent of connection)
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
-        console.log("[VIDEO] Got local media stream");
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("media_acquired", { videoID });
+          }
+        } catch (e) {
+          /* swallow */
+        }
         localStream = stream;
         streamRef.current = stream;
 
@@ -100,30 +110,32 @@ export default function Video({
         }
 
         // Step 2: Join the room
-        sock.emit("video-call", { roomId: videoID, userName: myName });
-        console.log("[VIDEO] Emitted video-call to join room");
+  sock.emit("video-call", { roomId: videoID, userName: myName });
 
         // Step 3: Handle room info
         sock.on("room-info", (data) => {
-          console.log("[VIDEO] Room info:", data);
-
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("room_info", { data });
+            }
+          } catch (e) {
+            /* swallow */
+          }
           if (data.userCount === 2) {
             // We're second user - initiate connection
-            console.log("[VIDEO] Initiating peer connection as second user");
             createPeer(stream);
-          } else {
-            console.log("[VIDEO] First user in room, waiting...");
           }
         });
 
         // Step 4: Handle incoming offer (we're the receiver)
         sock.on("offer", (data) => {
-          console.log(
-            "[VIDEO] Received offer from:",
-            data.userName,
-            "socket:",
-            data.from
-          );
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("received_offer", { from: data.from, userName: data.userName });
+            }
+          } catch (e) {
+            /* swallow */
+          }
           setRemotePeerName(data.userName);
 
           if (!peerRef.current) {
@@ -133,7 +145,13 @@ export default function Video({
 
         // Step 5: Handle answer to our offer (we're the initiator)
         sock.on("answer", (data) => {
-          console.log("[VIDEO] Received answer");
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("received_answer", {});
+            }
+          } catch (e) {
+            /* swallow */
+          }
 
           if (peerRef.current) {
             peerRef.current.signal(data.signal);
@@ -142,27 +160,51 @@ export default function Video({
 
         // Step 6: Handle ICE candidates
         sock.on("ice-candidate", (data) => {
-          console.log("[VIDEO] Received ICE candidate");
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("ice_candidate", {});
+            }
+          } catch (e) {
+            /* swallow */
+          }
 
           if (peerRef.current) {
             try {
               peerRef.current.signal(data.candidate);
-            } catch (err) {
-              console.error("[VIDEO] ICE candidate error:", err);
+              } catch (err) {
+                try {
+                  if (logger && typeof logger.logAction === "function") {
+                    logger.logAction("ice_error", { error: err && err.message ? err.message : String(err) });
+                  }
+                } catch (e) {
+                  /* swallow */
+                }
             }
           }
         });
 
         // Step 7: Handle user joining (we're already in room)
         sock.on("user-joined", (data) => {
-          console.log("[VIDEO] User joined:", data.userName);
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("user_joined", { userName: data.userName });
+            }
+          } catch (e) {
+            /* swallow */
+          }
           setRemotePeerName(data.userName);
           // Don't create peer here - the new user will initiate
         });
 
         // Step 8: Handle user leaving
         sock.on("user-left", (data) => {
-          console.log("[VIDEO] User left:", data.userName);
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("user_left", { userName: data.userName });
+            }
+          } catch (e) {
+            /* swallow */
+          }
 
           if (userVideo.current) {
             userVideo.current.srcObject = null;
@@ -177,14 +219,26 @@ export default function Video({
           }
         });
       })
-      .catch((err) => {
-        console.error("[VIDEO] Media error:", err);
+        .catch((err) => {
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("media_error", { message: err && err.message ? err.message : String(err) });
+          }
+        } catch (e) {
+          /* swallow */
+        }
         alert(`Cannot access camera/microphone: ${err.message}`);
       });
 
     // Create peer (initiator)
     function createPeer(stream) {
-      console.log("[VIDEO] Creating peer as initiator");
+      try {
+        if (logger && typeof logger.logAction === "function") {
+          logger.logAction("creating_peer_initiator", {});
+        }
+      } catch (e) {
+        /* swallow */
+      }
 
       const peer = new Peer({
         initiator: true,
@@ -199,7 +253,13 @@ export default function Video({
       });
 
       peer.on("signal", (signal) => {
-        console.log("[VIDEO] Sending offer to room:", videoID);
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("sending_offer", { videoID });
+          }
+        } catch (e) {
+          /* swallow */
+        }
         sock.emit("offer", {
           roomId: videoID,
           signal: signal,
@@ -208,7 +268,13 @@ export default function Video({
       });
 
       peer.on("stream", (remoteStream) => {
-        console.log("[VIDEO] Received remote stream");
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("remote_stream", {});
+          }
+        } catch (e) {
+          /* swallow */
+        }
 
         if (userVideo.current) {
           userVideo.current.srcObject = remoteStream;
@@ -218,17 +284,35 @@ export default function Video({
       });
 
       peer.on("error", (err) => {
-        console.error("[VIDEO] Peer error:", err);
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("peer_error", { message: err && err.message ? err.message : String(err) });
+          }
+        } catch (e) {
+          /* swallow */
+        }
         setIsConnected(false);
       });
 
       peer.on("close", () => {
-        console.log("[VIDEO] Peer closed");
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("peer_closed", {});
+          }
+        } catch (e) {
+          /* swallow */
+        }
         setIsConnected(false);
       });
 
       peer.on("connect", () => {
-        console.log("[VIDEO] Peer connected successfully!");
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("peer_connected", {});
+          }
+        } catch (e) {
+          /* swallow */
+        }
         setIsConnected(true);
       });
 
@@ -237,10 +321,13 @@ export default function Video({
 
     // Answer peer (receiver)
     function answerPeer(incomingSignal, callerSocketId, stream) {
-      console.log(
-        "[VIDEO] Creating peer as receiver, will answer to:",
-        callerSocketId
-      );
+      try {
+        if (logger && typeof logger.logAction === "function") {
+          logger.logAction("creating_peer_receiver", { callerSocketId });
+        }
+      } catch (e) {
+        /* swallow */
+      }
 
       const peer = new Peer({
         initiator: false,
@@ -255,7 +342,6 @@ export default function Video({
       });
 
       peer.on("signal", (signal) => {
-        console.log("[VIDEO] Sending answer to caller:", callerSocketId);
         sock.emit("answer", {
           signal: signal,
           to: callerSocketId,
@@ -263,8 +349,6 @@ export default function Video({
       });
 
       peer.on("stream", (remoteStream) => {
-        console.log("[VIDEO] Received remote stream");
-
         if (userVideo.current) {
           userVideo.current.srcObject = remoteStream;
         }
@@ -273,17 +357,21 @@ export default function Video({
       });
 
       peer.on("error", (err) => {
-        console.error("[VIDEO] Peer error:", err);
         setIsConnected(false);
       });
 
       peer.on("close", () => {
-        console.log("[VIDEO] Peer closed");
         setIsConnected(false);
       });
 
       peer.on("connect", () => {
-        console.log("[VIDEO] Peer connected successfully!");
+        try {
+          if (logger && typeof logger.logAction === "function") {
+            logger.logAction("peer_connected", {});
+          }
+        } catch (e) {
+          /* swallow */
+        }
         setIsConnected(true);
       });
 
@@ -293,12 +381,17 @@ export default function Video({
 
     // Cleanup
     return () => {
-      console.log("[VIDEO] Cleaning up");
+      try {
+        if (logger && typeof logger.logAction === "function") {
+          logger.logAction("cleanup", {});
+        }
+      } catch (e) {
+        /* swallow */
+      }
 
       if (localStream) {
         localStream.getTracks().forEach((track) => {
           track.stop();
-          console.log("[VIDEO] Stopped track:", track.kind);
         });
       }
 

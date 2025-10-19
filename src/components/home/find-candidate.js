@@ -19,7 +19,7 @@ export default function FindCandidate() {
         .get(`${API_BASE}/user/candidate`, header)
         .then((res) => {
           if (res.statusText === "OK") {
-            console.log("[FIND-CANDIDATE] Fetched candidates:", res.data.data);
+            // debug: fetched candidates (silenced)
             setpeople(res.data.data);
             setFilteredPeople(res.data.data);
           }

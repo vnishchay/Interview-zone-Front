@@ -16,7 +16,7 @@ const Activity = () => {
         .get(`${API_BASE}/user/profile`, header)
         .then((res) => {
           if (res.status === 200 && res.data.user) {
-            console.log("[ACTIVITY] Profile data:", res.data);
+            // debug: profile data fetched (silenced)
             setdata(res.data);
           }
         })
