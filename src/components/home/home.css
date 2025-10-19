@@ -10,59 +10,46 @@
   background-color: #261f60;
   top: 0%;
   width: 100%;
-  position: absolute;
 }
-
-.card {
-  background-color: #747c9b;
-  /* compact, near-square default for cards used across the app */
-  width: min(360px, 90%);
-  aspect-ratio: 4 / 5; /* width:height ≈ 4:5, near-square but slightly portrait */
-  max-width: 520px;
-  margin: 12px;
+.notif-container {
   position: relative;
-  justify-content: center;
+  display: inline-block;
+}
+
+.bell-icon {
+  vertical-align: middle;
+}
+
+.nav-notif-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  background: #ffffff; /* make badge white */
+  color: #111;
+  border-radius: 999px;
+  display: inline-flex;
   align-items: center;
-  text-align: center;
-  display: flex;
-}
-.card-interview {
-  background-color: #747c9b;
   justify-content: center;
-  align-items: center;
-  text-align: center;
-  border-radius: 0.5%;
-  border: #747c9b;
-  box-shadow: #1973bc;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.pulse:hover,
-.pulse:focus {
-  -webkit-animation: pulse 1s;
-  animation: pulse 1s;
-  box-shadow: 0 0 0 2em transparent;
-}
-
-@-webkit-keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 var(--hover);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 var(--hover);
-  }
-}
-.close:hover,
-.close:focus {
-  box-shadow: inset -3.5em 0 0 0 var(--hover), inset 3.5em 0 0 0 var(--hover);
-}
-
-.raise:hover,
-.raise:focus {
-  box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
-  transform: translateY(-0.25em);
+.notif-dropdown {
+  position: absolute;
+  right: 0;
+  top: 42px;
+  min-width: 220px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 1100;
 }
 
 .up:hover,
@@ -264,6 +251,51 @@ body {
   font-weight: 700;
   letter-spacing: 0.5px;
 }
+/* brand icon */
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  vertical-align: middle;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+.brand-text {
+  vertical-align: middle;
+  font-weight: 700;
+}
+
+/* Navbar notifications */
+.nav-notifications {
+  display: inline-block;
+  margin-left: 12px;
+  vertical-align: middle;
+}
+.nav-notif-link {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.nav-notif-badge {
+  background: #ff6b6b; /* solid color instead of gradient */
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #111;
+  font-weight: 700;
+  font-size: 13px;
+}
+.nav-notif-action {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
 
 .nav > .nav-btn {
   display: none;
@@ -274,6 +306,98 @@ body {
   float: right;
   font-size: 16px;
   padding-right: 20px;
+}
+
+/* Notification area styles */
+.nav-notif-area {
+  display: inline-block;
+  position: absolute;
+  right: 220px; /* keep it left of links */
+  top: 16px;
+}
+
+.notif-wrapper {
+  position: relative;
+}
+
+.nav-notif-button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.bell-icon {
+  vertical-align: middle;
+}
+
+.nav-notif-count {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  background: #ff3b30; /* solid notification red */
+  color: white;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 6px;
+}
+
+.notif-dropdown {
+  position: absolute;
+  right: 0;
+  top: 42px;
+  min-width: 220px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 1100;
+}
+
+.notif-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.notif-item:last-child {
+  border-bottom: none;
+}
+.notif-label {
+  color: #dfe8ff;
+  font-weight: 600;
+}
+.notif-value {
+  font-weight: 700;
+}
+.notif-actions {
+  text-align: right;
+  margin-top: 8px;
+}
+.notif-seeall {
+  color: #a5d8ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-quick-notif {
+  margin-left: 8px;
+  background: transparent;
+  border: none;
+  color: #ffffff; /* ensure icon is white */
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .nav > .nav-links > a,
