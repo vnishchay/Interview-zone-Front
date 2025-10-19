@@ -4,6 +4,13 @@ import { headers, API_BASE } from "../config";
 import ProfileCard from "../userCards/profileCards";
 import Navbar from "./navbar";
 
+// Simple in-memory cache to dedupe interviewer requests across mounts.
+// Keeps the first successful response for the app lifetime so later
+// remounts (or duplicate mounts) won't trigger a second network call
+// that could return an empty result and overwrite UI state.
+let interviewerCache = null;
+let interviewerPromise = null;
+
 export default function FindHost() {
   const [loading, setloading] = useState(true);
   const [people, setpeople] = useState([]);
@@ -13,21 +20,53 @@ export default function FindHost() {
   useEffect(() => {
     const header = headers();
     // Fetch hosts regardless of authentication state
-    axios
-      .get(`${API_BASE}/user/interviewer`, header)
-        .then((res) => {
-          if (res.statusText === "OK") {
-            // debug: fetched hosts (silenced)
-            setpeople(res.data.data);
-            setFilteredPeople(res.data.data);
-          }
+    if (interviewerCache) {
+      // reuse cached value
+      setpeople(interviewerCache);
+      setFilteredPeople(interviewerCache);
+      setloading(false);
+      return;
+    }
+
+    if (interviewerPromise) {
+      // another mount in flight — reuse it
+      interviewerPromise
+        .then((data) => {
+          setpeople(data);
+          setFilteredPeople(data);
         })
-          .catch((error) => {
+        .catch((error) => {
           console.error("[FIND-HOST] Error fetching hosts:", error);
         })
-        .finally(() => {
-          setloading(false);
-        });
+        .finally(() => setloading(false));
+      return;
+    }
+
+    interviewerPromise = axios
+      .get(`${API_BASE}/user/interviewer`, header)
+      .then((res) => {
+        if (res.statusText === "OK") {
+          interviewerCache = res.data.data || [];
+          return interviewerCache;
+        }
+        return [];
+      })
+      .catch((error) => {
+        console.error("[FIND-HOST] Error fetching hosts:", error);
+        interviewerCache = [];
+        throw error;
+      })
+      .finally(() => {
+        interviewerPromise = null;
+      });
+
+    interviewerPromise
+      .then((data) => {
+        setpeople(data);
+        setFilteredPeople(data);
+      })
+      .catch(() => {})
+      .finally(() => setloading(false));
   }, []); // Empty dependency array - only run once on mount
 
   // Real-time search effect

@@ -98,6 +98,17 @@
   position: relative;
 }
 
+.leave-btn {
+  margin-left: 12px;
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
 .settings-btn {
   background: transparent;
   border: none;
