@@ -80,44 +80,98 @@ export const Login = () => {
 
   return (
     <div className="login-container">
-      <form onSubmit={handleFormSubmit} className="login-form">
-        <h1>Login</h1>
-        <label htmlFor="email">
-          Email Address
-          <input
-            type="email"
-            value={data.email}
-            onChange={handleInputChange}
-            name="email"
-            id="email"
-            autoComplete="email"
-            required
-          />
-        </label>
-        <label htmlFor="password">
-          Password
-          <input
-            type="password"
-            value={data.password}
-            onChange={handleInputChange}
-            name="password"
-            id="password"
-            autoComplete="current-password"
-            required
-          />
-        </label>
-        {data.errorMessage && (
-          <span className="form-error" style={{ color: "red" }}>
-            {data.errorMessage}
-          </span>
-        )}
-        <button type="submit" disabled={data.isSubmitting}>
-          {data.isSubmitting ? "Loading..." : "Login"}
-        </button>
-        <div style={{ marginTop: 10 }}>
-          <Link to={"/register"}>Don't have an account? Register</Link>
+      <div className="login-panel">
+        <div className="marketing">
+          <div className="marketing-illustration" aria-hidden="true">
+            <svg
+              viewBox="0 0 600 400"
+              preserveAspectRatio="xMidYMid meet"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0%" stopColor="#6b73ff" />
+                  <stop offset="100%" stopColor="#9b59ff" />
+                </linearGradient>
+              </defs>
+              <rect
+                x="0"
+                y="0"
+                width="600"
+                height="400"
+                rx="16"
+                fill="url(#g1)"
+                opacity="0.12"
+              />
+              <g transform="translate(40,30)">
+                <circle cx="120" cy="90" r="70" fill="#fff" opacity="0.06" />
+                <rect
+                  x="220"
+                  y="40"
+                  rx="8"
+                  ry="8"
+                  width="260"
+                  height="220"
+                  fill="#fff"
+                  opacity="0.06"
+                />
+                <circle cx="380" cy="180" r="32" fill="#fff" opacity="0.08" />
+              </g>
+            </svg>
+          </div>
+          <h1 className="sr-only">Interview Zone</h1>
+          <p className="marketing-lead sr-only">Your interview, reimagined.</p>
+          <p className="marketing-copy sr-only">
+            Practice, pair-program, and host live interviews with built-in
+            coding, video, and chat. Fast setup, low friction — focus on the
+            conversation.
+          </p>
+          <ul className="marketing-features sr-only">
+            <li>Live video & screen sharing</li>
+            <li>Collaborative code editor</li>
+            <li>Session recording & notes</li>
+          </ul>
         </div>
-      </form>
+
+        <form onSubmit={handleFormSubmit} className="login-form right">
+          <h1>Login</h1>
+          <label htmlFor="email">
+            Email Address
+            <input
+              type="email"
+              value={data.email}
+              onChange={handleInputChange}
+              name="email"
+              id="email"
+              autoComplete="email"
+              required
+            />
+          </label>
+          <label htmlFor="password">
+            Password
+            <input
+              type="password"
+              value={data.password}
+              onChange={handleInputChange}
+              name="password"
+              id="password"
+              autoComplete="current-password"
+              required
+            />
+          </label>
+          {data.errorMessage && (
+            <span className="form-error" style={{ color: "red" }}>
+              {data.errorMessage}
+            </span>
+          )}
+          <button type="submit" disabled={data.isSubmitting}>
+            {data.isSubmitting ? "Loading..." : "Login"}
+          </button>
+          <div style={{ marginTop: 10 }}>
+            <Link to={"/register"}>Don't have an account? Register</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

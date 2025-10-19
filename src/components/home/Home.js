@@ -33,41 +33,11 @@ export default function Home() {
   const { state } = useAuth();
   const history = useHistory();
   const [url, seturl] = useState();
-  const [notifications, setNotifications] = useState({
-    interviewRequests: 0,
-    connectionRequests: 0,
-  });
-
-  // Fetch notifications on mount
-  React.useEffect(() => {
-    if (state.isAuthenticated) {
-      const header = headers();
-      if (header !== undefined) {
-        axios
-          .get(`${API_BASE}/user/profile`, header)
-          .then((res) => {
-            if (res.status === 200 && res.data.user) {
-              const interviewReqCount =
-                res.data.user.interviewRequest?.length || 0;
-              const connectionReqCount =
-                res.data.user.connectionRequests?.length || 0;
-              setNotifications({
-                interviewRequests: interviewReqCount,
-                connectionRequests: connectionReqCount,
-              });
-            }
-          })
-          .catch((err) => {
-            console.error("Error fetching notifications:", err);
-          });
-      }
-    }
-  }, [state.isAuthenticated]);
 
   const find = () => {
     const header = headers();
     const id = url.split("/");
-  // removed debug console
+    // removed debug console
     if (header !== undefined) {
       axios
         .post(
@@ -99,47 +69,6 @@ export default function Home() {
       {state.isAuthenticated ? (
         <>
           <Navbar></Navbar>
-
-          {/* Notifications Section */}
-          {(notifications.interviewRequests > 0 ||
-            notifications.connectionRequests > 0) && (
-            <div className="notifications-banner">
-              <div className="notifications-content">
-                <h3>📬 You have new notifications!</h3>
-                <div className="notification-items">
-                  {notifications.interviewRequests > 0 && (
-                    <Link to="/activity" className="notification-link">
-                      <div className="notification-badge">
-                        <span className="badge-count">
-                          {notifications.interviewRequests}
-                        </span>
-                        <span className="badge-text">
-                          Interview Request
-                          {notifications.interviewRequests > 1 ? "s" : ""}
-                        </span>
-                      </div>
-                    </Link>
-                  )}
-                  {notifications.connectionRequests > 0 && (
-                    <Link to="/activity" className="notification-link">
-                      <div className="notification-badge">
-                        <span className="badge-count">
-                          {notifications.connectionRequests}
-                        </span>
-                        <span className="badge-text">
-                          Connection Request
-                          {notifications.connectionRequests > 1 ? "s" : ""}
-                        </span>
-                      </div>
-                    </Link>
-                  )}
-                </div>
-                <Link to="/activity">
-                  <button className="view-activity-btn">View Activity</button>
-                </Link>
-              </div>
-            </div>
-          )}
 
           <section className="hero-section">
             <div className="hero-content">

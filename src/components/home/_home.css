@@ -244,7 +244,7 @@ ul li:before {
   background: transparent;
   padding: 100px 20px 120px;
   text-align: center;
-  color: white;
+  color: rgb(237, 237, 237);
   position: relative;
   overflow: hidden;
 }
@@ -303,7 +303,7 @@ ul li:before {
   max-width: 1400px;
   margin: 0 auto;
   min-height: 60vh;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(28, 7, 88, 0.98);
   border-radius: 40px 40px 0 0;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -361,7 +361,7 @@ ul li:before {
 }
 
 .c-services__item {
-  background: #ffffff;
+  background: #b6b0b0;
   padding: 36px 28px;
   border-radius: 20px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
@@ -396,12 +396,12 @@ ul li:before {
 }
 
 .feature-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-  border-color: #f3f4f6;
+  background: linear-gradient(135deg, #f8f8f4 0%, #98997d 100%);
+  border-color: #7f9edb;
 }
 
 .action-card {
-  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  background: linear-gradient(135deg, #f8f8f4 0%, #98997d 100%);
   border-color: #dbeafe;
 }
 
@@ -608,7 +608,7 @@ ul li:before {
 .features-footer {
   margin-top: 100px;
   padding: 70px 30px;
-  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  background: linear-gradient(135deg, #92b3ed 0%, #f9fafb 100%);
   border-radius: 24px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(102, 126, 234, 0.1);
@@ -649,7 +649,7 @@ ul li:before {
   align-items: center;
   gap: 20px;
   padding: 26px;
-  background: white;
+  background: rgb(206, 246, 252);
   border-radius: 16px;
   transition: all 0.3s ease;
   border: 2px solid transparent;
