@@ -18,7 +18,8 @@ export default function Register() {
   const signup = (formData) => {
     setErrorMessage("");
     setSuccessMessage("");
-    axios.post(`${API_BASE}/signup`, formData)
+    axios
+      .post(`${API_BASE}/signup`, formData)
       .then((res) => {
         if (res.status === 201 || res.status === 200) {
           setisdone(true);
@@ -41,7 +42,8 @@ export default function Register() {
   useEffect(() => {
     if (username !== "") {
       setCheckingUsername(true);
-      axios.post(`${API_BASE}/verifyusername`, { username: username })
+      axios
+        .post(`${API_BASE}/verifyusername`, { username: username })
         .then((res) => {
           if (res.data.status === "success") {
             setisfinal(true);
