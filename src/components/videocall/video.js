@@ -110,7 +110,7 @@ export default function Video({
         }
 
         // Step 2: Join the room
-  sock.emit("video-call", { roomId: videoID, userName: myName });
+        sock.emit("video-call", { roomId: videoID, userName: myName });
 
         // Step 3: Handle room info
         sock.on("room-info", (data) => {
@@ -131,7 +131,10 @@ export default function Video({
         sock.on("offer", (data) => {
           try {
             if (logger && typeof logger.logAction === "function") {
-              logger.logAction("received_offer", { from: data.from, userName: data.userName });
+              logger.logAction("received_offer", {
+                from: data.from,
+                userName: data.userName,
+              });
             }
           } catch (e) {
             /* swallow */
@@ -171,14 +174,16 @@ export default function Video({
           if (peerRef.current) {
             try {
               peerRef.current.signal(data.candidate);
-              } catch (err) {
-                try {
-                  if (logger && typeof logger.logAction === "function") {
-                    logger.logAction("ice_error", { error: err && err.message ? err.message : String(err) });
-                  }
-                } catch (e) {
-                  /* swallow */
+            } catch (err) {
+              try {
+                if (logger && typeof logger.logAction === "function") {
+                  logger.logAction("ice_error", {
+                    error: err && err.message ? err.message : String(err),
+                  });
                 }
+              } catch (e) {
+                /* swallow */
+              }
             }
           }
         });
@@ -218,11 +223,97 @@ export default function Video({
             peerRef.current = null;
           }
         });
+        // Local leave: another part of the app (Leave button) may emit this
+        // to request local cleanup without disconnecting the entire socket.
+        sock.on("leave-room", (data) => {
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("local_leave", { data });
+            }
+          } catch (e) {
+            /* swallow */
+          }
+
+          // Mirror the user-left cleanup for local leave
+          if (userVideo.current) {
+            try {
+              userVideo.current.srcObject = null;
+            } catch (e) {
+              /* swallow */
+            }
+          }
+
+          setIsConnected(false);
+          setRemotePeerName("");
+
+          if (peerRef.current) {
+            try {
+              peerRef.current.destroy();
+            } catch (e) {
+              /* swallow */
+            }
+            peerRef.current = null;
+          }
+
+          // Stop local stream tracks
+          if (streamRef.current) {
+            try {
+              streamRef.current.getTracks().forEach((t) => t.stop());
+            } catch (e) {
+              /* swallow */
+            }
+            streamRef.current = null;
+          }
+        });
+
+        // Also listen for an in-page local event (dispatched by control panel)
+        const onLocalLeave = (ev) => {
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("local_leave_event", { detail: ev.detail });
+            }
+          } catch (e) {
+            /* swallow */
+          }
+
+          if (userVideo.current) {
+            try {
+              userVideo.current.srcObject = null;
+            } catch (e) {
+              /* swallow */
+            }
+          }
+
+          setIsConnected(false);
+          setRemotePeerName("");
+
+          if (peerRef.current) {
+            try {
+              peerRef.current.destroy();
+            } catch (e) {
+              /* swallow */
+            }
+            peerRef.current = null;
+          }
+
+          if (streamRef.current) {
+            try {
+              streamRef.current.getTracks().forEach((t) => t.stop());
+            } catch (e) {
+              /* swallow */
+            }
+            streamRef.current = null;
+          }
+        };
+
+        window.addEventListener("local-leave", onLocalLeave);
       })
-        .catch((err) => {
+      .catch((err) => {
         try {
           if (logger && typeof logger.logAction === "function") {
-            logger.logAction("media_error", { message: err && err.message ? err.message : String(err) });
+            logger.logAction("media_error", {
+              message: err && err.message ? err.message : String(err),
+            });
           }
         } catch (e) {
           /* swallow */
@@ -286,7 +377,9 @@ export default function Video({
       peer.on("error", (err) => {
         try {
           if (logger && typeof logger.logAction === "function") {
-            logger.logAction("peer_error", { message: err && err.message ? err.message : String(err) });
+            logger.logAction("peer_error", {
+              message: err && err.message ? err.message : String(err),
+            });
           }
         } catch (e) {
           /* swallow */
@@ -405,6 +498,7 @@ export default function Video({
       sock.off("ice-candidate");
       sock.off("user-joined");
       sock.off("user-left");
+      window.removeEventListener("local-leave", () => {});
     };
   }, [videoID, myName]);
 

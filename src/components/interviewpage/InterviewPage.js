@@ -23,6 +23,7 @@ export default function InterviewPage() {
   const [candidateName, setCandidateName] = useState("Candidate");
   const [hostId, setHostId] = useState(null);
   const [participantId, setParticipantId] = useState(null);
+  const [interviewDocId, setInterviewDocId] = useState(null);
   const [currentUserRole, setCurrentUserRole] = useState("Participant");
   const [currentUserName, setCurrentUserName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -57,6 +58,7 @@ export default function InterviewPage() {
   const logger = useInterviewLogger(interviewID, currentUserName);
   const { logJoin, logLeave } = logger || {};
   const history = useHistory();
+  const leftRef = useRef(false);
 
   // debug render info removed
 
@@ -76,6 +78,7 @@ export default function InterviewPage() {
           // debug: interview data received (silenced)
           if (res.status === 200 && res.data.data && res.data.data.length > 0) {
             const interview = res.data.data[0];
+            setInterviewDocId(interview._id || interview.id || null);
             setHostName(interview.hostname || "Host");
             setCandidateName(interview.candidatename || "Candidate");
             setHostId(interview.idOfHost || null);
@@ -191,8 +194,15 @@ export default function InterviewPage() {
   // Log user leaving (cleanup)
   useEffect(() => {
     return () => {
+      // If the leave action was already triggered via the Leave button,
+      // don't call logLeave again here to avoid duplicate records.
+      if (leftRef.current) return;
       if (currentUserName && interviewID && typeof logLeave === "function") {
-        logLeave();
+        try {
+          logLeave();
+        } catch (e) {
+          /* swallow */
+        }
       }
     };
   }, [currentUserName, interviewID, logLeave]);
@@ -252,6 +262,29 @@ export default function InterviewPage() {
     }
   };
 
+  // Host-only: end the interview (mark endTime and archive)
+  const handleEndInterview = async () => {
+    if (!interviewDocId) {
+      return alert("Cannot determine interview document id");
+    }
+    if (!header) {
+      return alert("You must be authenticated to end the interview");
+    }
+    try {
+      const payload = { endTime: new Date().toISOString(), archived: true };
+      await axios.patch(
+        `${API_BASE}/interview/update/${interviewDocId}`,
+        payload,
+        header
+      );
+      // After ending, navigate to home (host left) so session is over locally.
+      history.push("/");
+    } catch (err) {
+      console.error("[INTERVIEW PAGE] Error ending interview:", err);
+      alert("Failed to end interview. Please try again.");
+    }
+  };
+
   if (loading) {
     return (
       <div className="interview-container">
@@ -288,13 +321,61 @@ export default function InterviewPage() {
               </>
             )}
 
+            {isHost && (
+              <button
+                className="end-btn"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to end this interview? This will archive the session."
+                    )
+                  ) {
+                    handleEndInterview();
+                  }
+                }}
+              >
+                End Interview
+              </button>
+            )}
+
             <button
               className="leave-btn"
               onClick={() => {
+                // Prevent duplicate leave actions
+                if (leftRef.current) return;
+                leftRef.current = true;
                 try {
                   if (typeof logLeave === "function") logLeave();
                 } catch (e) {}
-                history.push("/");
+                // Notify server/peers that this user is leaving the room.
+                // Emitting a leave event lets the Video component and server
+                // handle remote 'user-left' cleanup without forcibly tearing
+                // down the socket which can cause odd reinitialization behavior
+                try {
+                  if (
+                    socket &&
+                    typeof socket.emit === "function" &&
+                    interviewID
+                  ) {
+                    socket.emit("leave-room", { roomId: interviewID });
+                  }
+                  // Also dispatch a local event so the Video component (same page)
+                  // can perform immediate cleanup without waiting for any server
+                  // acknowledgement or broadcast.
+                  try {
+                    window.dispatchEvent(
+                      new CustomEvent("local-leave", {
+                        detail: { roomId: interviewID },
+                      })
+                    );
+                  } catch (e) {
+                    /* swallow */
+                  }
+                } catch (e) {
+                  /* swallow */
+                }
+                // Give a short moment for cleanup in child components (media tracks etc.)
+                setTimeout(() => history.push("/"), 120);
               }}
             >
               Leave

@@ -379,14 +379,16 @@ export const InterviewCard = ({ id, type }) => {
   return (
     <div className="profile-card card">
       {interview && (
-        <div>
+        <div className={interview.archived ? "archived-interview" : ""}>
           <div className="nameFamily">
             <div>Interview Session</div>
             <div>Host: {interview.hostname || "N/A"}</div>
             <div>Candidate: {interview.candidatename || "N/A"}</div>
             <div>Level: {interview.levelOfQuestions || "EASY"}</div>
           </div>
-          {type === 8 ? (
+          {interview.archived ? (
+            <div className="archived-badge">Archived</div>
+          ) : type === 8 ? (
             <Link to={`/setup/${interview.interviewID}`}>
               <button className="btn-0">Proceed</button>
             </Link>

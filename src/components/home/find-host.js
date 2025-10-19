@@ -4,13 +4,6 @@ import { headers, API_BASE } from "../config";
 import ProfileCard from "../userCards/profileCards";
 import Navbar from "./navbar";
 
-// Simple in-memory cache to dedupe interviewer requests across mounts.
-// Keeps the first successful response for the app lifetime so later
-// remounts (or duplicate mounts) won't trigger a second network call
-// that could return an empty result and overwrite UI state.
-let interviewerCache = null;
-let interviewerPromise = null;
-
 export default function FindHost() {
   const [loading, setloading] = useState(true);
   const [people, setpeople] = useState([]);
@@ -18,55 +11,47 @@ export default function FindHost() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    let mounted = true;
     const header = headers();
-    // Fetch hosts regardless of authentication state
-    if (interviewerCache) {
-      // reuse cached value
-      setpeople(interviewerCache);
-      setFilteredPeople(interviewerCache);
-      setloading(false);
-      return;
-    }
 
-    if (interviewerPromise) {
-      // another mount in flight — reuse it
-      interviewerPromise
-        .then((data) => {
-          setpeople(data);
-          setFilteredPeople(data);
-        })
-        .catch((error) => {
-          console.error("[FIND-HOST] Error fetching hosts:", error);
-        })
-        .finally(() => setloading(false));
-      return;
-    }
-
-    interviewerPromise = axios
-      .get(`${API_BASE}/user/interviewer`, header)
-      .then((res) => {
-        if (res.statusText === "OK") {
-          interviewerCache = res.data.data || [];
-          return interviewerCache;
+    const fetchHosts = async (useHeader = true) => {
+      try {
+        const h = useHeader ? header : undefined;
+        const res = await axios.get(`${API_BASE}/user/interviewer`, h);
+        const list = (res && (res.data?.data || res.data)) || [];
+        if (!mounted) return;
+        setpeople(list);
+        setFilteredPeople(list);
+        setloading(false);
+        return list;
+      } catch (err) {
+        console.error("[FIND-HOST] Error fetching hosts:", err);
+        if (!mounted) return;
+        // retry once without header (in case headers() produced an invalid value)
+        if (useHeader) {
+          try {
+            const res2 = await axios.get(`${API_BASE}/user/interviewer`);
+            const list2 = (res2 && (res2.data?.data || res2.data)) || [];
+            if (!mounted) return;
+            setpeople(list2);
+            setFilteredPeople(list2);
+            setloading(false);
+            return list2;
+          } catch (err2) {
+            console.error("[FIND-HOST] Retry failed:", err2);
+          }
         }
+        setpeople([]);
+        setFilteredPeople([]);
+        setloading(false);
         return [];
-      })
-      .catch((error) => {
-        console.error("[FIND-HOST] Error fetching hosts:", error);
-        interviewerCache = [];
-        throw error;
-      })
-      .finally(() => {
-        interviewerPromise = null;
-      });
+      }
+    };
 
-    interviewerPromise
-      .then((data) => {
-        setpeople(data);
-        setFilteredPeople(data);
-      })
-      .catch(() => {})
-      .finally(() => setloading(false));
+    fetchHosts();
+    return () => {
+      mounted = false;
+    };
   }, []); // Empty dependency array - only run once on mount
 
   // Real-time search effect
