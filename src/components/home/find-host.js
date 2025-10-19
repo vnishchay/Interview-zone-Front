@@ -12,9 +12,9 @@ export default function FindHost() {
 
   useEffect(() => {
     const header = headers();
-    if (header !== undefined) {
-      axios
-        .get(`${API_BASE}/user/interviewer`, header)
+    // Fetch hosts regardless of authentication state
+    axios
+      .get(`${API_BASE}/user/interviewer`, header)
         .then((res) => {
           if (res.statusText === "OK") {
             // debug: fetched hosts (silenced)
@@ -28,7 +28,6 @@ export default function FindHost() {
         .finally(() => {
           setloading(false);
         });
-    }
   }, []); // Empty dependency array - only run once on mount
 
   // Real-time search effect

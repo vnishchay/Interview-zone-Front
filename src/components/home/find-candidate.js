@@ -12,28 +12,25 @@ export default function FindCandidate() {
 
   useEffect(() => {
     const header = headers();
-    if (header !== undefined) {
-      // This endpoint should fetch users who want to be interviewed (ishost: false)
-      // You may need to create a new backend endpoint for this
-      axios
-        .get(`${API_BASE}/user/candidate`, header)
-        .then((res) => {
-          if (res.statusText === "OK") {
-            // debug: fetched candidates (silenced)
-            setpeople(res.data.data);
-            setFilteredPeople(res.data.data);
-          }
-        })
-        .catch((error) => {
-          console.error("[FIND-CANDIDATE] Error fetching candidates:", error);
-          // If endpoint doesn't exist, show empty state
-          setpeople([]);
-          setFilteredPeople([]);
-        })
-        .finally(() => {
-          setloading(false);
-        });
-    }
+    // Fetch candidates regardless of authentication state
+    axios
+      .get(`${API_BASE}/user/candidate`, header)
+      .then((res) => {
+        if (res.statusText === "OK") {
+          // debug: fetched candidates (silenced)
+          setpeople(res.data.data);
+          setFilteredPeople(res.data.data);
+        }
+      })
+      .catch((error) => {
+        console.error("[FIND-CANDIDATE] Error fetching candidates:", error);
+        // If endpoint doesn't exist, show empty state
+        setpeople([]);
+        setFilteredPeople([]);
+      })
+      .finally(() => {
+        setloading(false);
+      });
   }, []); // Empty dependency array - only run once on mount
 
   // Real-time search effect

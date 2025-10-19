@@ -15,19 +15,26 @@ export const FRONTEND_BASE =
     ? "https://interview-zone-frontend.web.app"
     : "http://localhost:3000");
 
+// Return a headers object for axios. When no token is present we return
+// an empty headers object so endpoints that don't require auth can still be
+// called without guarding for `undefined`.
 export const headers = () => {
   const token = localStorage.getItem("token");
-  if (token !== undefined && token !== null) {
-    const headers = {
-      Authorization: "Bearer " + token,
-    };
-    return {
-      headers,
-    };
+  const headers = {};
+  if (token) {
+    headers.Authorization = "Bearer " + token;
   }
+  return { headers };
+};
+
+// Backwards-compatible helper: returns undefined when no token exists. Use
+// this where callers explicitly rely on `header === undefined` behavior.
+export const authHeaders = () => {
+  const token = localStorage.getItem("token");
+  if (token) return { headers: { Authorization: "Bearer " + token } };
   return undefined;
 };
 
-const config = { headers, API_BASE };
+const config = { headers, authHeaders, API_BASE };
 
 export default config;
