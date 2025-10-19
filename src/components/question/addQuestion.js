@@ -22,7 +22,7 @@ export default function AddQuestion() {
       axios
         .post(`${url}/question/create`, payload, header)
         .then((res) => {
-          console.log(res.data);
+          // debug: question created (silenced)
         })
         .catch((err) =>
           console.error(

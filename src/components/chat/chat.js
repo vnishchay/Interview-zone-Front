@@ -9,8 +9,8 @@ const ChatRoom = () => {
   }, []);
 
   const handleNewUserMessage = (newMessage) => {
-    console.log(`New message incoming! ${newMessage}`);
-    // Now send the message throught the backend API
+    // new message received (silenced)
+    // Now send the message through the backend API
   };
   return (
     <div>

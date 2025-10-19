@@ -14,8 +14,8 @@ const SelectProblemsPage = () => {
       if (header)
         await axios.get(url + "/question/get", header).then((res) => {
           var data = res.data;
-          if (data) {
-            console.log(data);
+            if (data) {
+            // debug: problems fetched (silenced)
             data.data.forEach((problem) => {
               setquestionList((prev) => {
                 return [...new Set([...prev, problem])];
@@ -24,7 +24,7 @@ const SelectProblemsPage = () => {
           }
         });
     } catch (err) {
-      console.log(err);
+      // debug: fetch problems error (silenced)
     }
   };
 

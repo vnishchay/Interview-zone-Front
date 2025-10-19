@@ -17,12 +17,12 @@ export default function FindHost() {
         .get(`${API_BASE}/user/interviewer`, header)
         .then((res) => {
           if (res.statusText === "OK") {
-            console.log("[FIND-HOST] Fetched hosts:", res.data.data);
+            // debug: fetched hosts (silenced)
             setpeople(res.data.data);
             setFilteredPeople(res.data.data);
           }
         })
-        .catch((error) => {
+          .catch((error) => {
           console.error("[FIND-HOST] Error fetching hosts:", error);
         })
         .finally(() => {

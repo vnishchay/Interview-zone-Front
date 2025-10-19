@@ -18,7 +18,6 @@ export const create = (history) => {
       axios
         .post(`${API_BASE}/interview/create`, { interviewID: id }, header)
         .then((res) => {
-          console.log(res);
           if (res.statusText === "OK") {
             // axios.put('http://localhost:3001/')
             history.push(`/setup/${id}`);
@@ -26,7 +25,7 @@ export const create = (history) => {
         });
     }
   } catch (err) {
-    console.log("Can't Create an Interview" + err);
+    // error creating interview (silenced)
   }
 };
 
@@ -68,7 +67,7 @@ export default function Home() {
   const find = () => {
     const header = headers();
     const id = url.split("/");
-    console.log(id[id.length - 1]);
+  // removed debug console
     if (header !== undefined) {
       axios
         .post(
@@ -78,7 +77,7 @@ export default function Home() {
         )
         .then((res) => {
           if (res.statusText === "OK") {
-            console.log(res);
+            // removed debug console
             if (res.data.data && res.data.data.length > 0) {
               const id = res.data.data[0].id;
               axios
