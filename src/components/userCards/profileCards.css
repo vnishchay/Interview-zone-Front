@@ -22,6 +22,21 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
+.archived-interview {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.archived-badge {
+  background: rgba(255, 255, 255, 0.06);
+  color: #dfe8ff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-top: 10px;
+  display: inline-block;
+}
+
 .profile-card.card:hover {
   transform: translateY(-8px);
   border-color: rgba(102, 126, 234, 0.5);
