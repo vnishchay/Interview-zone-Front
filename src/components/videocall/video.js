@@ -16,14 +16,16 @@ export default function Video({
 }) {
   const { id: videoID } = useParams();
   const myVideo = useRef();
-  const userVideo = useRef();
-  const peerRef = useRef();
+  const peersRef = useRef({}); // map of remoteSocketId -> Peer instance
+  const userVideos = useRef({}); // map of remoteSocketId -> video element ref
   const streamRef = useRef();
 
   const [isvideo, setisvideo] = useState(true);
   const [isaudio, setisaudio] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
   const [remotePeerName, setRemotePeerName] = useState("");
+  const [remotePeers, setRemotePeers] = useState([]); // [{ id, name }]
+  const [roomFullMessage, setRoomFullMessage] = useState(null);
 
   // Label for local video: show 'You' plus name if available
   const displayMyName = authUserName || currentUserName || "You";
@@ -121,8 +123,16 @@ export default function Video({
           } catch (e) {
             /* swallow */
           }
-          if (data.userCount === 2) {
-            // We're second user - initiate connection
+          // If there are existing members, create a peer/offer for each of them
+          // so the joining user initiates connections to everyone already in the room.
+          if (data.existingMembers && Array.isArray(data.existingMembers)) {
+            data.existingMembers.forEach((memberId) => {
+              // limit to creating peers only up to MAX remote peers (3)
+              if (Object.keys(peersRef.current).length >= 3) return;
+              createPeer(stream, memberId);
+            });
+          } else if (data.userCount === 2) {
+            // fallback for older server behavior: create a single peer
             createPeer(stream);
           }
         });
@@ -139,9 +149,15 @@ export default function Video({
           } catch (e) {
             /* swallow */
           }
+          // Answer incoming offer from a specific remote peer
           setRemotePeerName(data.userName);
+          // register placeholder for this remote
+          setRemotePeers((prev) => {
+            if (prev.find((p) => p.id === data.from)) return prev;
+            return [...prev, { id: data.from, name: data.userName || "" }];
+          });
 
-          if (!peerRef.current) {
+          if (!peersRef.current[data.from]) {
             answerPeer(data.signal, data.from, stream);
           }
         });
@@ -156,8 +172,14 @@ export default function Video({
             /* swallow */
           }
 
-          if (peerRef.current) {
-            peerRef.current.signal(data.signal);
+          // Route the answer to the correct peer instance
+          const peer = peersRef.current[data.from];
+          if (peer) {
+            try {
+              peer.signal(data.signal);
+            } catch (e) {
+              /* swallow */
+            }
           }
         });
 
@@ -171,9 +193,12 @@ export default function Video({
             /* swallow */
           }
 
-          if (peerRef.current) {
+          // Route the ICE candidate to the matching peer (from)
+          const from = data.from;
+          const peer = peersRef.current[from];
+          if (peer) {
             try {
-              peerRef.current.signal(data.candidate);
+              peer.signal(data.candidate);
             } catch (err) {
               try {
                 if (logger && typeof logger.logAction === "function") {
@@ -197,8 +222,24 @@ export default function Video({
           } catch (e) {
             /* swallow */
           }
-          setRemotePeerName(data.userName);
-          // Don't create peer here - the new user will initiate
+          // Add a placeholder tile for the joining user; the joining client
+          // will initiate the WebRTC offers.
+          setRemotePeers((prev) => {
+            if (prev.find((p) => p.id === data.userId)) return prev;
+            return [...prev, { id: data.userId, name: data.userName || "" }];
+          });
+        });
+
+        // Step 7.5: Handle room full response from server
+        sock.on("room-full", (data) => {
+          try {
+            if (logger && typeof logger.logAction === "function") {
+              logger.logAction("room_full", { data });
+            }
+          } catch (e) {
+            /* swallow */
+          }
+          setRoomFullMessage((data && data.message) || "Room is full");
         });
 
         // Step 8: Handle user leaving
@@ -211,16 +252,26 @@ export default function Video({
             /* swallow */
           }
 
-          if (userVideo.current) {
-            userVideo.current.srcObject = null;
+          // Remove remote peer UI and destroy peer instance
+          const id = data.userId;
+          if (userVideos.current[id] && userVideos.current[id].current) {
+            try {
+              userVideos.current[id].current.srcObject = null;
+            } catch (e) {
+              /* swallow */
+            }
           }
 
-          setIsConnected(false);
-          setRemotePeerName("");
+          setRemotePeers((prev) => prev.filter((p) => p.id !== id));
 
-          if (peerRef.current) {
-            peerRef.current.destroy();
-            peerRef.current = null;
+          const peer = peersRef.current[id];
+          if (peer) {
+            try {
+              peer.destroy();
+            } catch (e) {
+              /* swallow */
+            }
+            delete peersRef.current[id];
           }
         });
         // Local leave: another part of the app (Leave button) may emit this
@@ -234,26 +285,27 @@ export default function Video({
             /* swallow */
           }
 
-          // Mirror the user-left cleanup for local leave
-          if (userVideo.current) {
-            try {
-              userVideo.current.srcObject = null;
-            } catch (e) {
-              /* swallow */
-            }
-          }
-
+          // Mirror the user-left cleanup for local leave: destroy all peers
           setIsConnected(false);
           setRemotePeerName("");
 
-          if (peerRef.current) {
-            try {
-              peerRef.current.destroy();
-            } catch (e) {
-              /* swallow */
-            }
-            peerRef.current = null;
+          try {
+            // Destroy and remove all peer instances
+            Object.keys(peersRef.current).forEach((k) => {
+              try {
+                peersRef.current[k].destroy();
+              } catch (e) {
+                /* swallow */
+              }
+              delete peersRef.current[k];
+            });
+          } catch (e) {
+            /* swallow */
           }
+
+          // Clear remote UI refs and state
+          userVideos.current = {};
+          setRemotePeers([]);
 
           // Stop local stream tracks
           if (streamRef.current) {
@@ -276,25 +328,24 @@ export default function Video({
             /* swallow */
           }
 
-          if (userVideo.current) {
-            try {
-              userVideo.current.srcObject = null;
-            } catch (e) {
-              /* swallow */
-            }
-          }
-
+          // Destroy all peers and clear state
           setIsConnected(false);
           setRemotePeerName("");
-
-          if (peerRef.current) {
-            try {
-              peerRef.current.destroy();
-            } catch (e) {
-              /* swallow */
-            }
-            peerRef.current = null;
+          try {
+            Object.keys(peersRef.current).forEach((k) => {
+              try {
+                peersRef.current[k].destroy();
+              } catch (e) {
+                /* swallow */
+              }
+              delete peersRef.current[k];
+            });
+          } catch (e) {
+            /* swallow */
           }
+
+          userVideos.current = {};
+          setRemotePeers([]);
 
           if (streamRef.current) {
             try {
@@ -322,7 +373,7 @@ export default function Video({
       });
 
     // Create peer (initiator)
-    function createPeer(stream) {
+    function createPeer(stream, remoteId) {
       try {
         if (logger && typeof logger.logAction === "function") {
           logger.logAction("creating_peer_initiator", {});
@@ -351,11 +402,13 @@ export default function Video({
         } catch (e) {
           /* swallow */
         }
-        sock.emit("offer", {
+        const payload = {
           roomId: videoID,
           signal: signal,
           userName: myName,
-        });
+        };
+        if (remoteId) payload.to = remoteId;
+        sock.emit("offer", payload);
       });
 
       peer.on("stream", (remoteStream) => {
@@ -367,8 +420,12 @@ export default function Video({
           /* swallow */
         }
 
-        if (userVideo.current) {
-          userVideo.current.srcObject = remoteStream;
+        // Attach remote stream to the corresponding video ref for the remoteId
+        if (remoteId) {
+          if (!userVideos.current[remoteId])
+            userVideos.current[remoteId] = React.createRef();
+          const vidRef = userVideos.current[remoteId];
+          if (vidRef && vidRef.current) vidRef.current.srcObject = remoteStream;
         }
 
         setIsConnected(true);
@@ -409,7 +466,7 @@ export default function Video({
         setIsConnected(true);
       });
 
-      peerRef.current = peer;
+      if (remoteId) peersRef.current[remoteId] = peer;
     }
 
     // Answer peer (receiver)
@@ -442,9 +499,10 @@ export default function Video({
       });
 
       peer.on("stream", (remoteStream) => {
-        if (userVideo.current) {
-          userVideo.current.srcObject = remoteStream;
-        }
+        const id = callerSocketId;
+        if (!userVideos.current[id]) userVideos.current[id] = React.createRef();
+        const vidRef = userVideos.current[id];
+        if (vidRef && vidRef.current) vidRef.current.srcObject = remoteStream;
 
         setIsConnected(true);
       });
@@ -469,7 +527,7 @@ export default function Video({
       });
 
       peer.signal(incomingSignal);
-      peerRef.current = peer;
+      peersRef.current[callerSocketId] = peer;
     }
 
     // Cleanup
@@ -488,8 +546,18 @@ export default function Video({
         });
       }
 
-      if (peerRef.current) {
-        peerRef.current.destroy();
+      // Destroy any remaining peers
+      try {
+        Object.keys(peersRef.current).forEach((k) => {
+          try {
+            peersRef.current[k].destroy();
+          } catch (e) {
+            /* swallow */
+          }
+          delete peersRef.current[k];
+        });
+      } catch (e) {
+        /* swallow */
       }
 
       sock.off("room-info");
@@ -498,7 +566,9 @@ export default function Video({
       sock.off("ice-candidate");
       sock.off("user-joined");
       sock.off("user-left");
-      window.removeEventListener("local-leave", () => {});
+      sock.off("leave-room");
+      sock.off("room-full");
+      window.removeEventListener("local-leave", onLocalLeave);
     };
   }, [videoID, myName]);
 
@@ -540,29 +610,40 @@ export default function Video({
             </div>
           )}
         </div>
-
-        <div className="video-wrapper peer-video-wrapper">
-          <video
-            className="video-element"
-            playsInline
-            ref={userVideo}
-            autoPlay
-          />
-          <div className="video-label">
-            <span className="username-badge">
-              {remotePeerName || otherUserName}
-            </span>
-          </div>
-          {!isConnected && (
-            <div className="waiting-overlay">
-              <p>
-                {remotePeerName
-                  ? `Waiting for ${remotePeerName} to join...`
-                  : `Waiting for other participant to join...`}
-              </p>
+        {/* Render remote peers dynamically (max 3) */}
+        {remotePeers.slice(0, 3).map((p) => {
+          if (!userVideos.current[p.id])
+            userVideos.current[p.id] = React.createRef();
+          return (
+            <div className="video-wrapper peer-video-wrapper" key={p.id}>
+              <video
+                className="video-element"
+                playsInline
+                ref={userVideos.current[p.id]}
+                autoPlay
+              />
+              <div className="video-label">
+                <span className="username-badge">
+                  {p.name || "Participant"}
+                </span>
+              </div>
+              {!isConnected && (
+                <div className="waiting-overlay">
+                  <p>{`Waiting for ${p.name ||
+                    "participant"} to connect...`}</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          );
+        })}
+
+        {roomFullMessage && (
+          <div className="room-full-overlay">
+            <div className="room-full-box">
+              <p>{roomFullMessage}</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
