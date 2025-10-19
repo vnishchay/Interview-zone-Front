@@ -1,10 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { headers, API_BASE } from "../config";
 import "./profilepage.css";
 import { CustomButton } from "../userCards/profileCards";
 import { useAuth } from "../auth/authContext";
+import "../question/addQuestion.css"; // reuse simple chip/button styles if available
 
 export default function ProfilePage() {
   const { id } = useParams();
@@ -19,6 +20,8 @@ export default function ProfilePage() {
     email: "",
     country: "",
   });
+  const [availableTags, setAvailableTags] = useState([]);
+  const [userTags, setUserTags] = useState([]);
   // Determine if this is the logged-in user's own profile
   const isOwnProfile =
     (!id && state.user) ||
@@ -45,6 +48,7 @@ export default function ProfilePage() {
                 email: payload.email || "",
                 country: payload.country || "",
               });
+              setUserTags(Array.isArray(payload.tags) ? payload.tags : []);
             }
           }
         })
@@ -70,12 +74,28 @@ export default function ProfilePage() {
                   email: res.data.user.email || "",
                   country: res.data.user.country || "",
                 });
+                setUserTags(
+                  Array.isArray(res.data.user.tags) ? res.data.user.tags : []
+                );
               }
             }
           });
       }
     }
   }, [id, state.user]);
+
+  // fetch all tags on mount (used for displaying friendly labels)
+  useEffect(() => {
+    axios
+      .get(`${API_BASE}/constants?key=interview-categories`)
+      .then((res) => {
+        if (res.status === 200 && res.data && res.data.data)
+          setAvailableTags(res.data.data);
+        else if (res.status === 200 && Array.isArray(res.data))
+          setAvailableTags(res.data);
+      })
+      .catch(() => {});
+  }, []);
 
   // Update roles (only for own profile)
   const handleRoleChange = (role, value) => {
@@ -191,6 +211,23 @@ export default function ProfilePage() {
                       {data.user.country || "Not set"}
                     </span>
                   </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Tags:</span>
+                    <span className="detail-value">
+                      {userTags && userTags.length ? (
+                        userTags.map((t) => {
+                          const tagObj = availableTags.find((x) => x.key === t);
+                          return (
+                            <span key={t} className="tag-chip">
+                              {tagObj ? tagObj.label : t}
+                            </span>
+                          );
+                        })
+                      ) : (
+                        <span className="detail-value">No tags set</span>
+                      )}
+                    </span>
+                  </div>
                 </>
               ) : (
                 <form onSubmit={handleEditSubmit} className="edit-form">
@@ -251,6 +288,8 @@ export default function ProfilePage() {
                   {editError && <div className="form-error">{editError}</div>}
                 </form>
               )}
+
+              {/* Tag editing removed from profile page — tags are displayed read-only here */}
             </div>
 
             {/* Edit Button (only for own profile) */}

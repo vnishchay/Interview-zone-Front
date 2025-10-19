@@ -80,7 +80,7 @@ const Navbar = () => {
       {/* keep dropdown anchored to nav-links (rightmost) */}
       <div className="nav-links">
         <Link to={"/"}>Home</Link>
-        <Link to={"/find-host"}>Explore</Link>
+        <Link to={"/find-host"}>Find Interview</Link>
         {state.isAuthenticated && <Link to={"/activity"}>Activity</Link>}
         {state.isAuthenticated && <Link to={"/profile"}>Profile</Link>}
 

@@ -18,8 +18,10 @@ export default function Register() {
   const signup = (formData) => {
     setErrorMessage("");
     setSuccessMessage("");
+    // include any selected tags with the signup payload
+    const payload = { ...formData, tags: selectedTags };
     axios
-      .post(`${API_BASE}/signup`, formData)
+      .post(`${API_BASE}/signup`, payload)
       .then((res) => {
         if (res.status === 201 || res.status === 200) {
           setisdone(true);
@@ -37,6 +39,35 @@ export default function Register() {
           error.response?.data?.message || error.message || "Signup failed."
         );
       });
+  };
+
+  // tags state and load available categories
+  const [categories, setCategories] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [tagsOpen, setTagsOpen] = useState(false);
+
+  useEffect(() => {
+    // fetch public tags (convenience endpoint) for interview categories
+    axios
+      .get(`${API_BASE}/tags`)
+      .then((res) => {
+        if (res.status === 200 && res.data && res.data.data) {
+          setCategories(res.data.data);
+        } else if (res.status === 200 && Array.isArray(res.data)) {
+          // fallback if controller returns array directly
+          setCategories(res.data);
+        }
+      })
+      .catch(() => {
+        // ignore failures; categories are optional
+      });
+  }, []);
+
+  const toggleTag = (key) => {
+    setSelectedTags((prev) => {
+      if (prev.includes(key)) return prev.filter((t) => t !== key);
+      return [...prev, key];
+    });
   };
 
   useEffect(() => {
@@ -159,6 +190,124 @@ export default function Register() {
                 required
               />
             </label>
+            {/* Tag selection - dropdown with checkboxes (predefined categories only, max 5) */}
+            <div style={{ marginTop: 12, position: "relative" }}>
+              <label
+                htmlFor="tag-dropdown"
+                style={{ display: "block", marginBottom: 6 }}
+              >
+                Interview Tags (optional)
+              </label>
+              <button
+                id="tag-dropdown"
+                type="button"
+                onClick={() => setTagsOpen((s) => !s)}
+                aria-haspopup="listbox"
+                aria-expanded={tagsOpen}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  background: "rgba(255,255,255,0.03)",
+                  color: "#fff",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  cursor: "pointer",
+                }}
+              >
+                Select tags
+                <span style={{ marginLeft: 8, color: "#aaa", fontSize: 13 }}>
+                  {selectedTags.length} selected
+                </span>
+              </button>
+
+              {tagsOpen && (
+                <div
+                  role="listbox"
+                  aria-label="Interview tags"
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    left: 0,
+                    minWidth: 260,
+                    maxHeight: 220,
+                    overflow: "auto",
+                    background: "#0f1724",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 8,
+                    padding: 10,
+                    zIndex: 40,
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
+                  }}
+                >
+                  {categories && categories.length > 0 ? (
+                    categories.map((c) => {
+                      const isSelected = selectedTags.includes(c.key);
+                      const disabled = !isSelected && selectedTags.length >= 5;
+                      return (
+                        <label
+                          key={c.key}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                            padding: "6px 8px",
+                            borderRadius: 6,
+                            cursor: disabled ? "not-allowed" : "pointer",
+                            color: disabled ? "#6b7280" : "#e5e7eb",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            disabled={disabled}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              setSelectedTags((prev) => {
+                                if (checked) {
+                                  if (prev.includes(c.key)) return prev;
+                                  if (prev.length >= 5) return prev;
+                                  return [...prev, c.key];
+                                }
+                                return prev.filter((t) => t !== c.key);
+                              });
+                            }}
+                          />
+                          <span style={{ flex: 1 }}>{c.label}</span>
+                        </label>
+                      );
+                    })
+                  ) : (
+                    <div style={{ color: "#999" }}>No tags available</div>
+                  )}
+                  <div
+                    style={{
+                      marginTop: 8,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <small style={{ color: "#9ca3af" }}>
+                      {selectedTags.length} selected (max 5)
+                    </small>
+                    <button
+                      type="button"
+                      onClick={() => setTagsOpen(false)}
+                      style={{
+                        background: "transparent",
+                        color: "#9ca3af",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             {errorMessage && <span className="form-error">{errorMessage}</span>}
             <button type="submit">Sign Up</button>
             <Link to="/">Already Registered? Login here</Link>

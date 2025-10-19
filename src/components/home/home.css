@@ -264,38 +264,7 @@ body {
   font-weight: 700;
 }
 
-/* Navbar notifications */
-.nav-notifications {
-  display: inline-block;
-  margin-left: 12px;
-  vertical-align: middle;
-}
-.nav-notif-link {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 999px;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-}
-.nav-notif-badge {
-  background: #ff6b6b; /* solid color instead of gradient */
-  padding: 6px 10px;
-  border-radius: 999px;
-  color: #111;
-  font-weight: 700;
-  font-size: 13px;
-}
-.nav-notif-action {
-  background: rgba(255, 255, 255, 0.12);
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 13px;
-}
+/* navbar notification legacy rules removed - consolidated into .notif-container, .nav-notif-count, and .notif-dropdown */
 
 .nav > .nav-btn {
   display: none;
@@ -308,48 +277,7 @@ body {
   padding-right: 20px;
 }
 
-/* Notification area styles */
-.nav-notif-area {
-  display: inline-block;
-  position: absolute;
-  right: 220px; /* keep it left of links */
-  top: 16px;
-}
-
-.notif-wrapper {
-  position: relative;
-}
-
-.nav-notif-button {
-  background: transparent;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  position: relative;
-}
-
-.bell-icon {
-  vertical-align: middle;
-}
-
-.nav-notif-count {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  min-width: 18px;
-  height: 18px;
-  background: #ff3b30; /* solid notification red */
-  color: white;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 0 6px;
-}
+/* old notification area styles removed */
 
 .notif-dropdown {
   position: absolute;
