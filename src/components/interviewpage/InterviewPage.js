@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import TextEditor from "../texteditor/textEditor";
 import Questions from "../question/questions";
 import axios from "axios";
 import "./interview.css";
-import { useEffect } from "react";
+
 import Video from "../videocall/video";
 import { useLocation, useParams } from "react-router-dom";
 import { headers, API_BASE } from "../config";
@@ -29,7 +29,20 @@ export default function InterviewPage() {
   const [showEditor, setShowEditor] = useState(false);
   const [showQuestions, setShowQuestions] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const header = headers();
+  // Stable header: derive from token so effects depending on headers don't rerun every render
+  const token = (authState && authState.token) || localStorage.getItem("token");
+  const header = useMemo(() => {
+    try {
+      if (typeof headers === "function") return headers();
+      if (headers && typeof headers === "object" && headers.headers)
+        return headers;
+    } catch (e) {
+      console.warn("[INTERVIEW PAGE] Could not resolve headers():", e);
+    }
+    return undefined;
+  }, [token]);
+  const fetchedInterviewRef = useRef(false);
+  const fetchedQuestionsRef = useRef(false);
 
   // Determine host by role first (computed earlier), fall back to ID or username checks
   const authUserId =
@@ -40,14 +53,17 @@ export default function InterviewPage() {
     currentUserName && hostName ? currentUserName === hostName : false;
   const isHost = currentUserRole === "Host" || idMatch || nameMatch;
 
-  // Initialize logger
+  // Initialize logger and pick stable callbacks
   const logger = useInterviewLogger(interviewID, currentUserName);
+  const { logJoin, logLeave } = logger || {};
 
   console.log("[INTERVIEW PAGE] Rendering with interviewID:", interviewID);
 
   // Fetch interview details
   useEffect(() => {
+    if (fetchedInterviewRef.current) return;
     if (header !== undefined && interviewID) {
+      fetchedInterviewRef.current = true;
       console.log("[INTERVIEW PAGE] Fetching interview data...");
       axios
         .post(
@@ -173,23 +189,23 @@ export default function InterviewPage() {
     } else {
       setLoading(false);
     }
-  }, [interviewID, header, authState.user]);
+  }, [interviewID, token, authState.user]);
 
   // Log user joining the interview
   useEffect(() => {
-    if (currentUserName && interviewID && logger) {
-      logger.logJoin();
+    if (currentUserName && interviewID && typeof logJoin === "function") {
+      logJoin();
     }
-  }, [currentUserName, interviewID, logger]);
+  }, [currentUserName, interviewID, logJoin]);
 
   // Log user leaving (cleanup)
   useEffect(() => {
     return () => {
-      if (currentUserName && interviewID && logger) {
-        logger.logLeave();
+      if (currentUserName && interviewID && typeof logLeave === "function") {
+        logLeave();
       }
     };
-  }, [currentUserName, interviewID, logger]);
+  }, [currentUserName, interviewID, logLeave]);
 
   // Listen for room-level UI toggles from host
   useEffect(() => {
@@ -219,7 +235,9 @@ export default function InterviewPage() {
 
   // Fetch questions
   useEffect(() => {
+    if (fetchedQuestionsRef.current) return;
     if (header !== undefined) {
+      fetchedQuestionsRef.current = true;
       console.log("[INTERVIEW PAGE] Fetching questions...");
       axios
         .get(`${API_BASE}/question/get`, header)
@@ -232,7 +250,7 @@ export default function InterviewPage() {
           setquestions([]);
         });
     }
-  }, [header]);
+  }, [token]);
 
   console.log("[INTERVIEW PAGE] Current state:", {
     hostName,
