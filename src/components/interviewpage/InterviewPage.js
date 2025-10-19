@@ -5,7 +5,7 @@ import axios from "axios";
 import "./interview.css";
 
 import Video from "../videocall/video";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useHistory } from "react-router-dom";
 import { headers, API_BASE } from "../config";
 import { useAuth } from "../auth/authContext";
 import socket from "../socket";
@@ -56,6 +56,7 @@ export default function InterviewPage() {
   // Initialize logger and pick stable callbacks
   const logger = useInterviewLogger(interviewID, currentUserName);
   const { logJoin, logLeave } = logger || {};
+  const history = useHistory();
 
   // debug render info removed
 
@@ -64,7 +65,7 @@ export default function InterviewPage() {
     if (fetchedInterviewRef.current) return;
     if (header !== undefined && interviewID) {
       fetchedInterviewRef.current = true;
-  // debug: fetching interview data (silenced)
+      // debug: fetching interview data (silenced)
       axios
         .post(
           `${API_BASE}/interview/findfilter`,
@@ -172,9 +173,9 @@ export default function InterviewPage() {
           setLoading(false);
         })
         .catch((err) => {
-            console.error("[INTERVIEW PAGE] Error fetching interview data:", err);
-            setLoading(false);
-          });
+          console.error("[INTERVIEW PAGE] Error fetching interview data:", err);
+          setLoading(false);
+        });
     } else {
       setLoading(false);
     }
@@ -227,7 +228,7 @@ export default function InterviewPage() {
     if (fetchedQuestionsRef.current) return;
     if (header !== undefined) {
       fetchedQuestionsRef.current = true;
-  // debug: fetching questions (silenced)
+      // debug: fetching questions (silenced)
       axios
         .get(`${API_BASE}/question/get`, header)
         .then((res) => {
@@ -241,7 +242,7 @@ export default function InterviewPage() {
     }
   }, [token]);
 
-    // debug: current state (silenced)
+  // debug: current state (silenced)
 
   const handleQuestionsUpdate = (updatedQuestions) => {
     setquestions(updatedQuestions);
@@ -269,19 +270,37 @@ export default function InterviewPage() {
   return (
     <div className="interview-container">
       {/* Dev debug overlay removed */}
-      {/* Control Panel - Only visible to Host */}
-      {isHost && (
+      {/* Leave button moved into control panel to sit adjacent to settings */}
+
+      {/* Control Panel - visible to Host and Candidate */}
+      {(isHost || currentUserRole === "Candidate") && (
         <div className="control-panel">
           <div className="host-settings">
+            {isHost && (
+              <>
+                <button
+                  className="settings-btn"
+                  aria-label="Open settings"
+                  onClick={() => setShowSettings((s) => !s)}
+                >
+                  ⚙️
+                </button>
+              </>
+            )}
+
             <button
-              className="settings-btn"
-              aria-label="Open settings"
-              onClick={() => setShowSettings((s) => !s)}
+              className="leave-btn"
+              onClick={() => {
+                try {
+                  if (typeof logLeave === "function") logLeave();
+                } catch (e) {}
+                history.push("/");
+              }}
             >
-              ⚙️
+              Leave
             </button>
 
-            {showSettings && (
+            {isHost && showSettings && (
               <div className="settings-menu">
                 <div className="settings-item">
                   <label>Show Code Editor</label>
