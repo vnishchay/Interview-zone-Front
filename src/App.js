@@ -32,7 +32,7 @@ function App() {
             <PrivateRoute path="/interview/:id">
               <InterviewPage />
             </PrivateRoute>
-            {/* <Route path={'/login'} component={Login}></Route> */}
+            <Route path={"/login"} component={Login}></Route>
             <Route path={"/register"} component={Register}></Route>
             <PrivateRoute path="/find-host">
               <Navbar></Navbar>
